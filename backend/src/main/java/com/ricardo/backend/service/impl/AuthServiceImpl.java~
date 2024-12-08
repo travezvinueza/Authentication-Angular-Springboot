@@ -1,0 +1,138 @@
+package com.ricardo.backend.service.impl;
+
+import com.ricardo.backend.dto.*;
+import com.ricardo.backend.entity.Role;
+import com.ricardo.backend.entity.User;
+import com.ricardo.backend.repositoty.RoleRepository;
+import com.ricardo.backend.repositoty.UserRepository;
+import com.ricardo.backend.service.AuthService;
+import com.ricardo.backend.service.EmailService;
+import com.ricardo.backend.utils.JwtHelper;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+
+import java.security.SecureRandom;
+import java.util.List;
+import java.util.stream.Collectors;
+
+@Service
+@RequiredArgsConstructor
+public class AuthServiceImpl implements AuthService {
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+    private final JwtHelper jwtHelper;
+    private final AuthenticationManager authenticationManager;
+    private final PasswordEncoder passwordEncoder;
+    private final SecureRandom secureRandom = new SecureRandom();
+    private final EmailService emailService;
+
+    @Override
+    public ReqRes login(LoginDto loginDto) {
+        try {
+
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword())
+            );
+
+            User user = userRepository.findByUsername(loginDto.getUsername())
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+            String jwt = jwtHelper.generateToken(user);
+//            String refreshToken = jwtHelper.generateRefreshToken(new HashMap<>(), user);
+
+            return ReqRes.builder()
+                    .statusCode(200)
+                    .message("Inicio de sesion exitoso")
+                    .token(jwt)
+                    .roles(user.getRoles().stream()
+                            .map(role -> new RoleDto(role.getId(), role.getRoleName()))
+                            .toList())
+//                    .refreshToken(refreshToken)
+                    .expirationTime("24Horas")
+                    .build();
+        } catch (BadCredentialsException e) {
+            throw new RuntimeException("Credenciales inválidas");
+        } catch (Exception e) {
+            throw new RuntimeException("Error al autenticar el usuario: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public ReqRes register(UserDto userDto) {
+        try {
+
+            if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+                throw new RuntimeException("El usuario ya existe");
+            }
+
+            List<Role> roles = userDto.getRoles().stream()
+                    .map(roleDto -> roleRepository.findByRoleName(roleDto.getRoleName())
+                            .orElseThrow(() -> new RuntimeException("Rol no encontrado: " + roleDto.getRoleName())))
+                    .collect(Collectors.toList());
+
+            User newUser = User.builder()
+                    .username(userDto.getUsername())
+                    .password(passwordEncoder.encode(userDto.getPassword()))
+                    .email(userDto.getEmail())
+                    .imageProfile(userDto.getImageProfile())
+                    .roles(roles)
+                    .build();
+
+            User savedUser = userRepository.save(newUser);
+
+            return ReqRes.builder()
+                    .id(savedUser.getId())
+                    .username(savedUser.getUsername())
+                    .password(savedUser.getPassword())
+                    .imageProfile(savedUser.getImageProfile())
+                    .email(savedUser.getEmail())
+                    .otp(savedUser.getOtp())
+                    .roles(savedUser.getRoles().stream()
+                            .map(role -> new RoleDto(role.getId(), role.getRoleName()))
+                            .toList())
+                    .message("Usuario registrado exitosamente")
+                    .statusCode(200)
+                    .build();
+        } catch (Exception e) {
+            throw new RuntimeException("Error al registrar el usuario: " + e.getMessage());
+        }
+    }
+
+    @Override
+    public String resetPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        String otp = generateOTP();
+        user.setOtp(otp);
+        userRepository.save(user);
+
+        String subject = "Restablecimiento de contraseña";
+        String body = "Tu OTP para restablecer la contraseña es: " + otp;
+        emailService.sendEmail(email, subject, body);
+
+        return "Se ha enviado un OTP a tu correo electrónico para restablecer la contraseña.";
+    }
+
+    @Override
+    public String forgetPassword(String otp, String newPassword) {
+        User userOtp = userRepository.findByOtp(otp)
+                .orElseThrow(() -> new RuntimeException("OTP no encontrado"));
+
+        userOtp.setPassword(passwordEncoder.encode(newPassword));
+        userOtp.setOtp(null);
+        userRepository.save(userOtp);
+
+        return "Contraseña actualizada con éxito.";
+    }
+
+    private String generateOTP() {
+        int otpValue = secureRandom.nextInt(900000) + 100000;
+        return String.valueOf(otpValue);
+    }
+
+}
