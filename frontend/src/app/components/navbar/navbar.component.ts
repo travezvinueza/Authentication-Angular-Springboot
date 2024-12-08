@@ -30,7 +30,6 @@ export class NavbarComponent implements OnInit {
   }
 
   logout():void{
-    debugger
     this.authService.logOut();
     this.isAuthenticated = false;
     this.isAdmin = false;

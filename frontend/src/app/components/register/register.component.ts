@@ -60,7 +60,7 @@ export class RegisterComponent implements OnInit{
       }
   
       const userDto: UserDto = this.formUser.value;
-  debugger
+      
       this.authService.registerUser(userDto, this.selectedFile).subscribe({
         next: () => {
           this.msgService.add({ severity: 'success', summary: 'Éxito', detail: 'Usuario registrado exitosamente.' });

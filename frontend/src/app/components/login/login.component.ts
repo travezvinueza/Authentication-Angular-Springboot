@@ -36,7 +36,6 @@ export class LoginComponent implements OnInit{
     }
 
     const { username, password } = this.userDetail.value;
-    debugger
 
     this.authService.login(username, password).subscribe({
       
