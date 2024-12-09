@@ -12,6 +12,10 @@ import { RouterLink, RouterModule } from '@angular/router';
 export class NavbarComponent implements OnInit {
 
   collapsed = true;
+  isAuthenticated:boolean = false;
+  isAdmin:boolean = false;
+  isUser:boolean = false;
+  private authSubscription: any;
 
   constructor(private readonly authService: AuthService){}
 
@@ -19,21 +23,27 @@ export class NavbarComponent implements OnInit {
     this.collapsed = !this.collapsed;
   }
 
-  isAuthenticated:boolean = false;
-  isAdmin:boolean = false;
-  isUser:boolean = false;
-
   ngOnInit(): void {
-      this.isAuthenticated = this.authService.isAuthenticated();
+    this.authSubscription = this.authService.authenticated$.subscribe((isAuthenticated) => {
+      this.isAuthenticated = isAuthenticated;
       this.isAdmin = this.authService.isAdmin();
-      this.isUser = this.authService.isUser();
+      this.isUser = !this.isAdmin; // Un usuario regular no es administrador
+    });
+    // Verificar roles iniciales
+    this.isAdmin = this.authService.isAdmin();
+    this.isUser = !this.isAdmin;
   }
 
-  logout():void{
+  logout(): void {
     this.authService.logOut();
     this.isAuthenticated = false;
     this.isAdmin = false;
     this.isUser = false;
   }
 
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
+    }
+  }
 }

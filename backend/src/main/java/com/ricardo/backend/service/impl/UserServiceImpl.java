@@ -9,6 +9,7 @@ import com.ricardo.backend.repositoty.UserRepository;
 import com.ricardo.backend.service.FileUploadService;
 import com.ricardo.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -89,6 +91,16 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado con ID: " + id));
+
+        if (user.getImageProfile() != null) {
+            String imageId = extractFileNameFromUrl(user.getImageProfile());
+            try {
+                fileUploadService.deleteUpload(imageId);
+            } catch (IOException e) {
+                log.error("Error al eliminar la imagen del usuario con ID: {}. Detalles: {}", id, e.getMessage());
+                e.printStackTrace();
+            }
+        }
         userRepository.delete(user);
     }
 

@@ -19,7 +19,6 @@ import { RoleService } from '../../services/role.service';
 export class RegisterComponent implements OnInit{
 
   formUser !: FormGroup;
-  // roles: RoleDto[] = [];
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null
 
@@ -40,13 +39,6 @@ export class RegisterComponent implements OnInit{
       });
   
      }
-
-    //  getRoles() {
-    //   this.roleService.listRole().subscribe({
-    //     next: (data: any) => (this.roles = data),
-    //     error: (error: HttpErrorResponse) => console.error(error),
-    //   });
-    // }
 
      register(): void {
       if (this.formUser.invalid) {

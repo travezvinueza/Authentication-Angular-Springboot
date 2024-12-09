@@ -5,6 +5,7 @@ import { Router, RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../services/auth.service';
+import { MessageService } from 'primeng/api';
 
 @Component({
   selector: 'app-login',
@@ -19,6 +20,7 @@ export class LoginComponent implements OnInit{
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthService,
+    private readonly msgService: MessageService,
     private readonly router: Router) {}
 
 
@@ -31,7 +33,7 @@ export class LoginComponent implements OnInit{
 
   login(): void {
     if (this.userDetail.invalid) {
-      alert('Por favor, completa los campos requeridos.');
+      this.msgService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor, completa los campos requeridos.' });
       return;
     }
 
@@ -58,7 +60,8 @@ export class LoginComponent implements OnInit{
       },
       error: (err) => {
         console.error('Error al iniciar sesión:', err);
-        alert('Credenciales incorrectas o error en el servidor.');
+        this.msgService.add({ severity: 'error', summary: 'Error', detail: 'Credenciales incorrectas o error en el servidor.' });
+      
       },
     });
   }

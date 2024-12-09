@@ -28,12 +28,14 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
         createDefaultRoles(Set.of("ADMIN", "USER"));
 
         createDefaultUserIfNotExists(
-                "Ricardo", "123456", "travezvinueza@gmail.com", Set.of("ADMIN"),
+                "Ricardo", "123456", "travezvinueza@gmail.com",
+                "https://res.cloudinary.com/duzogl1l3/image/upload/v1721606329/bwlnhhuwsu50lwjwhc7k.jpg", Set.of("ADMIN"),
                 "Administrador creado correctamente: Ricardo/123456"
         );
 
         createDefaultUserIfNotExists(
-                "Evelin", "evelin123", "evelin@gmail.com", Set.of("USER"),
+                "Evelin", "evelin123", "evelin@gmail.com",
+                "https://res.cloudinary.com/duzogl1l3/image/upload/v1725165333/Evelin_orfwci.jpg", Set.of("USER"),
                 "Usuario creado correctamente: Evelin/evelin123"
         );
     }
@@ -46,7 +48,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     }
 
     private void createDefaultUserIfNotExists(
-            String username, String password, String email, Set<String> roleNames, String successMessage
+            String username, String password, String email, String image, Set<String> roleNames, String successMessage
     ) {
         if (userRepository.findByUsername(username).isEmpty()) {
             List<Role> roles = roleNames.stream()
@@ -58,6 +60,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
                     .username(username)
                     .password(passwordEncoder.encode(password))
                     .email(email)
+                    .imageProfile(image)
                     .roles(roles)
                     .build();
 
