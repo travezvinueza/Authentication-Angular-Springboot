@@ -1,0 +1,43 @@
+<div class="container d-flex align-items-center justify-content-center" style="height: 60vh; margin-top: 10vh;">
+    <form [formGroup]="formUser" (ngSubmit)="register()">
+        <p-card header="Sign up" class="text-center" [style]="{ width: '370px'}">
+
+            <div class="d-flex flex-column align-items-center ">
+                <img *ngIf="previewUrl" [src]="previewUrl" alt="Vista previa" class="align-items-lg-center"
+                    width="100px" height="100px" style="border-radius: 50%;" />
+            </div>
+
+            <div class="form-group">
+                <input id="username" type="text" formControlName="username" placeholder="Username"
+                    class="form-control" />
+            </div>
+
+            <div class="form-group mt-3">
+                <input id="email" type="email" formControlName="email" placeholder="Email" class="form-control" />
+            </div>
+
+            <div class="form-group mt-3">
+                <input id="password" type="password" formControlName="password" placeholder="Password"
+                    class="form-control" />
+            </div>
+
+            <!-- <div class="form-group mt-3">
+                <select id="roles" formControlName="roles" class="form-select" multiple required>
+                    <option value="" disabled selected>Select a Rol</option>
+                    <option value="ADMIN">ADMIN</option>
+                    <option value="USER">USER</option>
+                </select>
+            </div> -->
+
+            <div class="form-group mt-3">
+                <input type="file" accept="image/*" formControlName="imageProfile" (change)="uploadFile($event)" />
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100 mt-4">Register</button>
+
+            <div class="mt-3 text-center">Already have an account? <a (click)="redirectLogin()"
+                    style="text-decoration: underline; color: blue; cursor: pointer;">Login</a>
+            </div>
+        </p-card>
+    </form>
+</div>
