@@ -32,6 +32,7 @@ En la aplicacion de contraseñas de google crear una contraseña e introducir en
 ## Imagenes
 
 ![App Screenshot](images/all-users.png)
+![App Screenshot](images/edit-users.png)
 ![App Screenshot](images/role.png)
 ![App Screenshot](images/login.png)
 ![App Screenshot](images/register.png)
