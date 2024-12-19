@@ -1,0 +1,47 @@
+<div class="pop-up container">
+    <form [formGroup]="userForm" (ngSubmit)="updateUser()" class="p-4 border rounded shadow-sm bg-light">
+        <div class="d-flex flex-column align-items-center mb-3">
+            <img *ngIf="previewUrl" [src]="previewUrl" alt="Vista previa" class="rounded-circle" width="100px"
+                height="100px" />
+        </div>
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="username" class="form-label">Username:</label>
+                <input type="text" formControlName="username" class="form-control" placeholder="username">
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="email" class="form-label">Email:</label>
+                <input type="email" formControlName="email" class="form-control" placeholder="email">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="accountLocked" class="form-label">Lock/Unlock:</label>
+                <select id="accountLocked" formControlName="accountLocked" class="form-select">
+                    <option [value]="true">Lock</option>
+                    <option [value]="false">Unlock</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="password" class="form-label">Password:</label>
+                <input type="password" formControlName="password" class="form-control" placeholder="password">
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label for="roles" class="form-label">Roles:</label>
+                <select id="roles" formControlName="roles" class="form-select" multiple required>
+                    <option *ngFor="let role of roles" [value]="role.roleName">{{ role.roleName }}</option>
+                </select>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label for="imageProfile" class="form-label">Image:</label>
+                <input type="file" id="imageProfile" formControlName="imageProfile" class="form-control"
+                    accept="image/*" (change)="uploadFile($event)">
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Actualizar</button>
+    </form>
+</div>

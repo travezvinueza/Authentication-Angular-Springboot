@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { RoleService } from '../../services/role.service';
 import { MessageService } from 'primeng/api';
 import { Router, RouterModule } from '@angular/router';
-import { RoleDto } from '../../interfaces/RoleDto';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
+import { RoleDto } from '../../../interfaces/RoleDto';
+import { RoleService } from '../../../services/role.service';
 
 declare let $: any;
 
@@ -136,4 +136,5 @@ export class RoleComponent implements OnInit {
       error: (error: HttpErrorResponse) => console.error(error),
     });
   }
+  
 }

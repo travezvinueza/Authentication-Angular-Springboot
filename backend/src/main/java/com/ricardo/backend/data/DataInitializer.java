@@ -31,13 +31,13 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
 
         createDefaultUserIfNotExists(new DefaultUserData(
                 "Ricardo", "123456", "travezvinueza@gmail.com",
-                "https://res.cloudinary.com/duzogl1l3/image/upload/v1721606329/bwlnhhuwsu50lwjwhc7k.jpg", Set.of("ADMIN"),
+                "https://res.cloudinary.com/duzogl1l3/image/upload/v1725165057/anonimus_pzvrq1.jpg", Set.of("ADMIN"),
                 false,
                 "Administrador creado correctamente: Ricardo/123456"
         ));
 
         createDefaultUserIfNotExists(new DefaultUserData(
-                "Evelin", "evelin123", "evelin@gmail.com",
+                "Evelin", "evelin123", "evelinvera@gmail.com",
                 "https://res.cloudinary.com/duzogl1l3/image/upload/v1725165333/Evelin_orfwci.jpg", Set.of("USER"),
                 false,
                 "Usuario creado correctamente: Evelin/evelin123"

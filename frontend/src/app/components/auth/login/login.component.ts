@@ -54,7 +54,7 @@ export class LoginComponent implements OnInit{
 
         const roles = response.roles.map((role: any) => role.roleName);
         if (roles.includes('ADMIN')) {
-          this.router.navigate(['/adminHome']);
+          this.router.navigate(['/user-list']);
         } else if (roles.includes('USER')) {
           this.router.navigate(['/userHome']);
         } else {

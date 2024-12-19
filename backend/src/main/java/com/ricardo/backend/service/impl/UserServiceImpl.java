@@ -19,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -61,6 +62,7 @@ public class UserServiceImpl implements UserService {
 
         user.setUsername(userDto.getUsername());
         user.setEmail(userDto.getEmail());
+        user.setAccountLocked(userDto.isAccountLocked());
 
         // Si hay una nueva imagen, reemplazar la existente
         if (newImage != null && !newImage.isEmpty()) {
@@ -81,7 +83,7 @@ public class UserServiceImpl implements UserService {
             List<Role> roles = userDto.getRoles().stream()
                     .map(roleDto -> roleRepository.findByRoleName(roleDto.getRoleName())
                             .orElseThrow(() -> new RoleNotFoundException("Role not found: " + roleDto.getRoleName())))
-                            .toList();
+                    .collect(Collectors.toList());
             user.setRoles(roles);
         }
 

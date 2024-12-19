@@ -8,6 +8,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root',
 })
 export class AuthService {
+
   private readonly baseUrl = environment.apiUrl + '/auth';
 
   // Usamos BehaviorSubject para mantener el estado de la autenticación.
@@ -16,7 +17,7 @@ export class AuthService {
   );
   authenticated$ = this.authenticatedSubject.asObservable();
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   login(username: string, password: string): Observable<UserDto> {
     const body = { username, password };
@@ -31,12 +32,8 @@ export class AuthService {
 
   registerUser(userDto: UserDto, imageProfile: File): Observable<UserDto> {
     const formData = new FormData();
-    formData.append(
-      'userDto',
-      new Blob([JSON.stringify(userDto)], { type: 'application/json' })
-    );
+    formData.append('userDto', new Blob([JSON.stringify(userDto)], { type: 'application/json' }));
     formData.append('imageProfile', imageProfile);
-
     return this.http.post<UserDto>(`${this.baseUrl}/register`, formData);
   }
 
@@ -68,8 +65,8 @@ export class AuthService {
   }
 
   isAdmin(): boolean {
-    const roles = this.getRoles(); 
-    return roles.some((role) => role.roleName === 'ADMIN'); 
+    const roles = this.getRoles();
+    return roles.some((role) => role.roleName === 'ADMIN');
   }
 
   isUser(): boolean {

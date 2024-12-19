@@ -43,10 +43,9 @@ public class SecurityConfig {
                         .requestMatchers("/api/auth/**", "/upload/**").permitAll()
                         .requestMatchers("/api/roles/**").hasAnyAuthority("ADMIN")
                         .requestMatchers("/api/users/**").hasAnyAuthority("ADMIN")
-                        .requestMatchers("/api/users/update/").hasAnyAuthority("ADMIN", "USER")
-                        .requestMatchers("/api/orders/**").hasAnyAuthority("USER")
-                        .requestMatchers("/api/user/**").hasAnyAuthority("USER")
-                        .requestMatchers("/api/adminuser/**").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/users/update").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/users/getById/{id}").hasAnyAuthority("ADMIN", "USER")
+                        .requestMatchers("/api/categories/**").hasAnyAuthority("ADMIN", "USER")
                         .anyRequest().authenticated())
                 .sessionManagement(manager->manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root',
 })
-export class UserService {
+export class AdminService {
+  
   private readonly baseUrl = environment.apiUrl + '/users';
 
   constructor(private readonly http: HttpClient) {}
@@ -25,15 +26,17 @@ export class UserService {
   }
 
   getUserById(id: number): Observable<UserDto> {
-    return this.http.get<UserDto>(`${this.baseUrl}/${id}`);
+    return this.http.get<UserDto>(`${this.baseUrl}/getById/${id}`);
   }
 
-  updateUser(userDto: UserDto, newImage: File): Observable<UserDto> {
+  updateUser(userDto: UserDto, image?: File): Observable<UserDto> {
     const formData = new FormData();
     formData.append('userDto', new Blob([JSON.stringify(userDto)], { type: 'application/json' }));
-    formData.append('newImage', newImage);
-
-    return this.http.put<UserDto>(`${this.baseUrl}/${userDto.id}/update`, formData);
+    if (image) {
+      formData.append('newImage', image);
+    }
+  
+    return this.http.put<UserDto>(`${this.baseUrl}/update`, formData);
   }
 
    blockUser(id: number): Observable<UserDto> {

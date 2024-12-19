@@ -1,42 +1,42 @@
 import { Component, OnInit } from '@angular/core';
-import { UserDto } from '../../interfaces/UserDto';
-import { MessageService } from 'primeng/api';
-import { Router, RouterModule } from '@angular/router';
-import {
-  FormBuilder,
-  FormGroup,
-  FormsModule,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { UserService } from '../../services/user.service';
-import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
+import { RouterModule } from '@angular/router';
+import { UserDto } from '../../../interfaces/UserDto';
+import { AdminService } from '../../../services/admin.service';
+import { MessageService } from 'primeng/api';
+import { HttpErrorResponse } from '@angular/common/http';
+import { UserEditComponent } from "../user-edit/user-edit.component";
 
 declare let $: any;
 
 @Component({
-  selector: 'app-admin',
+  selector: 'app-user-list',
   imports: [
     CommonModule,
     FormsModule,
     InputTextModule,
     ReactiveFormsModule,
     RouterModule,
+    UserEditComponent
   ],
-  templateUrl: './admin.component.html',
-  styleUrl: './admin.component.css',
+  templateUrl: './user-list.component.html',
+  styleUrl: './user-list.component.css'
 })
-export class AdminComponent implements OnInit {
+export class UserListComponent implements OnInit {
+
   users: UserDto[] = [];
   userDetail!: FormGroup;
 
+  usuariosEditar: any;
+  modoOculto: boolean = true;
+
   constructor(
     private readonly formBuilder: FormBuilder,
-    private readonly userService: UserService,
+    private readonly adminService: AdminService,
     private readonly msgService: MessageService,
-    private readonly router: Router
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.getAllUsers();
@@ -59,7 +59,7 @@ export class AdminComponent implements OnInit {
   }
 
   getAllUsers() {
-    this.userService.getAllListUser().subscribe({
+    this.adminService.getAllListUser().subscribe({
       next: (data: any) => (this.users = data),
       error: (error: HttpErrorResponse) => console.error(error),
     });
@@ -76,7 +76,7 @@ export class AdminComponent implements OnInit {
       accountLocked: false,
     };
 
-    this.userService
+    this.adminService
       .createUser(nuevoUsuario, this.userDetail.value.imageProfile)
       .subscribe({
         next: () => {
@@ -95,7 +95,7 @@ export class AdminComponent implements OnInit {
   }
 
   editUser(id: number) {
-    this.userService.getUserById(id).subscribe({
+    this.adminService.getUserById(id).subscribe({
       next: (user: UserDto) => {
         this.userDetail.patchValue(user);
       },
@@ -112,11 +112,11 @@ export class AdminComponent implements OnInit {
       email: this.userDetail.value.email,
       roles: this.userDetail.value.roles || [],
       password: '',
-      token: '', 
+      token: '',
       accountLocked: false,
     };
 
-    this.userService
+    this.adminService
       .updateUser(usuarioActualizado, this.userDetail.value.imageProfile)
       .subscribe({
         next: () => {
@@ -140,7 +140,7 @@ export class AdminComponent implements OnInit {
   }
 
   blockUser(id: number) {
-    this.userService.blockUser(id).subscribe({
+    this.adminService.blockUser(id).subscribe({
       next: () => {
         this.msgService.add({
           severity: 'info',
@@ -154,7 +154,7 @@ export class AdminComponent implements OnInit {
   }
 
   unblockUser(id: number) {
-    this.userService.unblockUser(id).subscribe({
+    this.adminService.unblockUser(id).subscribe({
       next: () => {
         this.msgService.add({
           severity: 'success',
@@ -168,7 +168,7 @@ export class AdminComponent implements OnInit {
   }
 
   deleteUser(id: number) {
-    this.userService.deleteUser(id).subscribe({
+    this.adminService.deleteUser(id).subscribe({
       next: () => {
         this.msgService.add({
           severity: 'success',
@@ -180,4 +180,16 @@ export class AdminComponent implements OnInit {
       error: (error: HttpErrorResponse) => console.error(error),
     });
   }
+
+  toggleModoEdicion(user: any) {
+    this.usuariosEditar = user;
+    this.editarModoOculto()
+    console.log("algoooo*", this.usuariosEditar);
+  }
+
+  editarModoOculto() {
+    this.modoOculto = !this.modoOculto;
+    this.getAllUsers();
+  }
+
 }
