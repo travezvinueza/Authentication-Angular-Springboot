@@ -28,6 +28,13 @@
                         <a class="nav-link" routerLink="" (click)="logout()">Logout</a>
                     </li>
                 </ul>
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item d-flex align-items-center" *ngIf="isAuthenticated">
+                        <img [src]="userImage" class="rounded-circle me-2"
+                            style="width: 40px; height: 40px; cursor: pointer;" alt="Profile"
+                            (click)="redirectToProfile()" onkeyup />
+                    </li>
+                </ul>
             </div>
         </form>
     </div>

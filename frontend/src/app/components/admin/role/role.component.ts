@@ -75,14 +75,11 @@ export class RoleComponent implements OnInit {
           summary: 'Éxito',
           detail: 'Rol creado exitosamente.',
         });
+        this.roleDetail.reset();
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
-        this.msgService.add({
-          severity: 'error',
-          summary: 'Error',
-          detail: 'Error al crear el rol',
-        });
+        this.msgService.add({severity: 'error', summary: 'Error', detail: 'Error al crear el rol',});
       },
     });
   }
@@ -111,6 +108,7 @@ export class RoleComponent implements OnInit {
           summary: 'Éxito',
           detail: 'Rol actualizado exitosamente.',
         });
+        this.roleDetail.reset();
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);

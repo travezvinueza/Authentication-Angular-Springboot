@@ -22,7 +22,7 @@ public class UserController {
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserDto> createUser(@RequestPart UserDto userDto,
-                                              @RequestPart MultipartFile imageProfile) throws IOException {
+                                              @RequestPart(required = false) MultipartFile imageProfile) throws IOException {
         return new ResponseEntity<>(userService.createUser(userDto, imageProfile), HttpStatus.CREATED);
     }
 

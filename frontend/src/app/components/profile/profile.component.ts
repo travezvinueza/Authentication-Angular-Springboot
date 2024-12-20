@@ -1,69 +1,60 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@angular/core';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
-import { AdminService } from '../../../services/admin.service';
 import { MessageService } from 'primeng/api';
-import { RoleService } from '../../../services/role.service';
-import { HttpErrorResponse } from '@angular/common/http';
-import { RoleDto } from '../../../interfaces/RoleDto';
+import { AdminService } from '../../services/admin.service';
 
 @Component({
-  selector: 'app-user-edit',
-  imports: [CommonModule, FormsModule, InputTextModule, ReactiveFormsModule, RouterModule],
-  templateUrl: './user-edit.component.html',
-  styleUrl: './user-edit.component.css'
+  selector: 'app-profile',
+  imports: [
+    CommonModule,
+    FormsModule,
+    InputTextModule,
+    ReactiveFormsModule,
+    RouterModule
+  ],
+  templateUrl: './profile.component.html',
+  styleUrl: './profile.component.css'
 })
-export class UserEditComponent implements OnInit {
+export class ProfileComponent implements OnInit {
 
-  @Input() usuariosEditar: any;
-  @Output() modoOculto = new EventEmitter();
-  
   userForm!: FormGroup;
   selectedFile: File | null = null;
   previewUrl: string | ArrayBuffer | null = null
-  roles: RoleDto[] = [];
 
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly adminService: AdminService,
-    private readonly roleService: RoleService,
-    private readonly msgService: MessageService,
-  ) { }
+    private readonly msgService: MessageService) { }
 
   ngOnInit(): void {
     this.userForm = this.formBuilder.group({
       id: [0],
       username: [''],
+      password: [''],
       email: [''],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      roles: [[]],
       imageProfile: [null],
+      roles: [[]],
       accountLocked: [false],
     });
-
-    this.getAllRoles();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['usuariosEditar'] && this.usuariosEditar) {
-      this.userForm.patchValue({...this.usuariosEditar, imageProfile: null, });
-      this.previewUrl = this.usuariosEditar.imageProfile;
-    }
-    console.log("onchange", this.usuariosEditar);
-  }
-
-  getAllRoles() {
-    this.roleService.getAllListRole().subscribe({
-      next: (data: any) => (this.roles = data),
-      error: (error: HttpErrorResponse) => console.error(error),
+  editUser(id: number) {
+    this.adminService.getUserById(id).subscribe({
+      next: (userData: any) => {
+        this.userForm.patchValue(userData);
+      },
+      error: (err: HttpErrorResponse) => {
+        console.error(err);
+      },
     });
   }
 
   updateUser() {
     const valoresFormulario = this.userForm.value;
-
     // Validar formulario
     if (!this.userForm.valid) {
       Object.values(this.userForm.controls).forEach((control) => control.markAsTouched());
@@ -76,7 +67,6 @@ export class UserEditComponent implements OnInit {
         this.userForm.reset();
         this.previewUrl = ''; // Limpiar la vista previa
         this.selectedFile = null; // Limpiar el archivo seleccionado
-        this.modoOculto.emit();
       },
       error: (err) => {
         console.error('Error en la solicitud:', err);

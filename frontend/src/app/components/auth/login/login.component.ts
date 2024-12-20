@@ -40,7 +40,6 @@ export class LoginComponent implements OnInit{
     const { username, password } = this.userDetail.value;
 
     this.authService.login(username, password).subscribe({
-      
       next: (response: any) => {
 
         // Verifica si la cuenta está bloqueada
@@ -49,10 +48,7 @@ export class LoginComponent implements OnInit{
         return;
       }
       
-        localStorage.setItem('token', response.token);
-        localStorage.setItem('roles', JSON.stringify(response.roles));
-
-        const roles = response.roles.map((role: any) => role.roleName);
+        const roles = this.authService.getRoles();
         if (roles.includes('ADMIN')) {
           this.router.navigate(['/user-list']);
         } else if (roles.includes('USER')) {

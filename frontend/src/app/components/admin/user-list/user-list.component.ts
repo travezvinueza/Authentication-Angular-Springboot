@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { RouterModule } from '@angular/router';
 import { UserDto } from '../../../interfaces/UserDto';
@@ -8,6 +8,8 @@ import { AdminService } from '../../../services/admin.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserEditComponent } from "../user-edit/user-edit.component";
+import { RoleService } from '../../../services/role.service';
+import { RoleDto } from '../../../interfaces/RoleDto';
 
 declare let $: any;
 
@@ -27,7 +29,11 @@ declare let $: any;
 export class UserListComponent implements OnInit {
 
   users: UserDto[] = [];
+  roles: RoleDto[] = [];
   userDetail!: FormGroup;
+
+  selectedFile: File | null = null;
+  previewUrl: string | ArrayBuffer | null = null
 
   usuariosEditar: any;
   modoOculto: boolean = true;
@@ -35,6 +41,7 @@ export class UserListComponent implements OnInit {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly adminService: AdminService,
+    private readonly roleService: RoleService,
     private readonly msgService: MessageService,
   ) { }
 
@@ -43,12 +50,13 @@ export class UserListComponent implements OnInit {
     this.userDetail = this.formBuilder.group({
       id: [0],
       username: [''],
-      password: [''],
+      password: ['',[Validators.required, Validators.minLength(6)]],
       email: [''],
-      imageProfile: [null],
-      roles: [[]],
-      accountLocked: [false],
+      imageUrl: [null],
+      roles2: [[]],
+      locked: [false],
     });
+    this.getAllRoles();
   }
 
   //metodo para darle movimiento al modal
@@ -65,19 +73,17 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  addUser() {
-    const nuevoUsuario: UserDto = {
-      id: 0,
-      username: this.userDetail.value.username,
-      email: this.userDetail.value.email,
-      roles: this.userDetail.value.roles || [],
-      password: '',
-      token: '',
-      accountLocked: false,
-    };
+  getAllRoles() {
+    this.roleService.getAllListRole().subscribe({
+      next: (data: any) => (this.roles = data),
+      error: (error: HttpErrorResponse) => console.error(error),
+    });
+  }
 
-    this.adminService
-      .createUser(nuevoUsuario, this.userDetail.value.imageProfile)
+  addUser() {
+    const newUser = this.userDetail.value;
+
+    this.adminService.createUser(newUser, this.selectedFile || undefined)
       .subscribe({
         next: () => {
           this.msgService.add({
@@ -90,51 +96,6 @@ export class UserListComponent implements OnInit {
         },
         error: (err: HttpErrorResponse) => {
           console.error(err);
-        },
-      });
-  }
-
-  editUser(id: number) {
-    this.adminService.getUserById(id).subscribe({
-      next: (user: UserDto) => {
-        this.userDetail.patchValue(user);
-      },
-      error: (err: HttpErrorResponse) => {
-        console.error(err);
-      },
-    });
-  }
-
-  updateUser() {
-    const usuarioActualizado: UserDto = {
-      id: this.userDetail.value.id,
-      username: this.userDetail.value.username,
-      email: this.userDetail.value.email,
-      roles: this.userDetail.value.roles || [],
-      password: '',
-      token: '',
-      accountLocked: false,
-    };
-
-    this.adminService
-      .updateUser(usuarioActualizado, this.userDetail.value.imageProfile)
-      .subscribe({
-        next: () => {
-          this.msgService.add({
-            severity: 'warn',
-            summary: 'Éxito',
-            detail: 'Usuario actualizado',
-          });
-          this.userDetail.reset();
-          this.getAllUsers();
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Error al actualizar el usuario:', error);
-          this.msgService.add({
-            severity: 'error',
-            summary: 'Error',
-            detail: 'Error al actualizar el usuario',
-          });
         },
       });
   }
@@ -179,6 +140,21 @@ export class UserListComponent implements OnInit {
       },
       error: (error: HttpErrorResponse) => console.error(error),
     });
+  }
+
+  showPreview() {
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.previewUrl = e.target.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
+    }
+  }
+
+  uploadFile(event: any) {
+    this.selectedFile = event.target.files[0];
+    this.showPreview();
   }
 
   toggleModoEdicion(user: any) {

@@ -17,10 +17,12 @@ export class AdminService {
     return this.http.get<UserDto[]>(`${this.baseUrl}/list`);
   }
 
-  createUser(userDto: UserDto, imageProfile: File): Observable<UserDto> {
+  createUser(userDto: UserDto, imageUrl?: File): Observable<UserDto> {
     const formData = new FormData();
     formData.append('userDto', new Blob([JSON.stringify(userDto)], { type: 'application/json' }));
-    formData.append('imageProfile', imageProfile);
+    if (imageUrl) {
+      formData.append('imageProfile', imageUrl);
+    }
 
     return this.http.post<UserDto>(`${this.baseUrl}/create`, formData);
   }

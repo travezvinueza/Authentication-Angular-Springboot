@@ -23,17 +23,16 @@ export class AuthService {
     const body = { username, password };
     return this.http.post<UserDto>(`${this.baseUrl}/login`, body).pipe(
       tap((user: UserDto) => {
-        localStorage.setItem('token', user.token);
-        localStorage.setItem('roles', JSON.stringify(user.roles));
+        localStorage.setItem('userDto', JSON.stringify(user));
         this.authenticatedSubject.next(true);
       })
     );
   }
 
-  registerUser(userDto: UserDto, imageProfile: File): Observable<UserDto> {
+  registerUser(userDto: UserDto, image: File): Observable<UserDto> {
     const formData = new FormData();
     formData.append('userDto', new Blob([JSON.stringify(userDto)], { type: 'application/json' }));
-    formData.append('imageProfile', imageProfile);
+    formData.append('imageProfile', image);
     return this.http.post<UserDto>(`${this.baseUrl}/register`, formData);
   }
 
@@ -52,37 +51,34 @@ export class AuthService {
   /** Métodos de autenticación */
 
   logOut(): void {
-    if (typeof localStorage !== 'undefined') {
-      localStorage.removeItem('token');
-      localStorage.removeItem('roles');
-    }
+    localStorage.removeItem('userDto');
     this.authenticatedSubject.next(false);
   }
 
   isAuthenticated(): boolean {
-    const token = this.getToken();
-    return !!token;
+    return !!this.getUserDto();
   }
 
   isAdmin(): boolean {
-    const roles = this.getRoles();
-    return roles.some((role) => role.roleName === 'ADMIN');
+    return this.getUserDto()?.roles?.some((role: any) => role.roleName === 'ADMIN') || false;
   }
 
   isUser(): boolean {
-    const roles = this.getRoles();
-    return roles.some((role) => role.roleName === 'USER');
+    return this.getUserDto()?.roles?.some((role: any) => role.roleName === 'USER') || false;
   }
 
-  private getToken(): string | null {
-    if (typeof localStorage !== 'undefined') {
-      return localStorage.getItem('token');
-    }
-    return null;
+  getUserImage(): string {
+    return this.getUserDto()?.imageProfile ?? '';
   }
 
-  private getRoles(): { id: number; roleName: string }[] {
-    const roles = localStorage.getItem('roles');
-    return roles ? JSON.parse(roles) : [];
+  getRoles(): string[] {
+    const userDto = this.getUserDto();
+    return userDto?.roles?.map((role: any) => role.roleName) || [];
   }
+
+  private getUserDto(): UserDto | null {
+    const userDto = localStorage.getItem('userDto');
+    return userDto ? JSON.parse(userDto) : null;
+  }
+  
 }

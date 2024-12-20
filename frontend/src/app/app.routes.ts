@@ -8,6 +8,7 @@ import { ResetPasswordComponent } from './components/auth/reset-password/reset-p
 import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
 import { UserListComponent } from './components/admin/user-list/user-list.component';
 import { RoleComponent } from './components/admin/role/role.component';
+import { ProfileComponent } from './components/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' }, 
@@ -18,5 +19,6 @@ export const routes: Routes = [
   { path: 'userHome', component: HomeComponent, title: 'User', canActivate: [authGuard] }, 
   { path: 'role', component: RoleComponent, title: 'Roles', canActivate: [adminGuard], }, 
   { path: 'user-list', component: UserListComponent, title: 'List', canActivate: [authGuard] },  
+  { path: 'profile', component: ProfileComponent, title: 'Profile', canActivate: [authGuard] },
   { path: '**', redirectTo: '/login' } 
 ];

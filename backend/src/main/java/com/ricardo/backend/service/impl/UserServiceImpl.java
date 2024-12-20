@@ -36,16 +36,22 @@ public class UserServiceImpl implements UserService {
             throw new UserNotFoundException("El usuario ya existe con el email: " + userDto.getEmail());
         }
 
-        List<Role> roles = userDto.getRoles().stream()
+        Role defaultRole = roleRepository.findByRoleName("USER")
+                .orElseThrow(() -> new RoleNotFoundException("Rol predeterminado 'USER' no encontrado"));
+
+        List<Role> roles = userDto.getRoles() != null && !userDto.getRoles().isEmpty()
+                ? userDto.getRoles().stream()
                 .map(roleDto -> roleRepository.findByRoleName(roleDto.getRoleName())
-                        .orElseThrow(() -> new UserNotFoundException("Role not found: " + roleDto.getRoleName())))
-                .toList();
+                        .orElseThrow(() -> new RoleNotFoundException("Rol no encontrado: " + roleDto.getRoleName())))
+                .toList()
+                : List.of(defaultRole);
 
         User user = User.builder()
                 .username(userDto.getUsername())
                 .password(passwordEncoder.encode(userDto.getPassword()))
                 .email(userDto.getEmail())
                 .roles(roles)
+                .accountLocked(userDto.isAccountLocked())
                 .build();
 
         String image = fileUploadService.uploadFile(imageProfile);

@@ -59,37 +59,64 @@
         </div>
     </div>
 
-</div>
 
-<div class="modal fade" id="agregarModalUsuario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog draggable modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header bg-info text-center">
-                <h4 class="modal-title w-100 text-white" id="exampleModalLabel">Agregar Usuario</h4>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
+    <div class="modal fade" id="agregarModalUsuario" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog draggable modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-info text-center">
+                    <h4 class="modal-title w-100 text-white" id="exampleModalLabel">Add User</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
 
-                <form [formGroup]="userDetail">
-                    <input type="hidden" formControlName="id" class="form-control" id="id">
+                    <form [formGroup]="userDetail">
+                        <input type="hidden" formControlName="id" class="form-control" id="id">
 
-                    <div class="mb-3">
-                        <input type="text" formControlName="username" class="form-control" id="username"
-                            placeholder="Username" required>
-                    </div>
-                    <div class="mb-3">
-                        <input type="text" formControlName="email" class="form-control" id="email" placeholder="Email"
-                            required>
-                    </div>
-                    <br>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal"> <i
-                                class="fa fa-cancel"></i>Cancelar</button>
-                        <button type="button" class="btn btn-success btn-sm" data-bs-dismiss="modal"
-                            (click)="addUser()"><i class="fa fa-save"></i>Agregar </button>
-                    </div>
-                </form>
+                        <div class="d-flex flex-column align-items-center">
+                            <img *ngIf="previewUrl" [src]="previewUrl" alt="Vista previa" class="rounded-circle"
+                                width="100px" height="100px" />
+                        </div>
+
+                        <div class="mb-3">
+                            <input type="text" formControlName="username" class="form-control" id="username"
+                                placeholder="Username" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="text" formControlName="email" class="form-control" id="email"
+                                placeholder="Email" required>
+                        </div>
+                        <div class="mb-3">
+                            <input type="password" formControlName="password" class="form-control" id="password"
+                                placeholder="Password" required>
+                        </div>
+                        <div class="mb-3">
+                            <select formControlName="locked" class="form-select" id="locked">
+                                <option value="true">Lock</option>
+                                <option value="false">Unlock</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <select formControlName="roles2" class="form-select" id="roles2" required>
+                                <option value="">Select a role</option>
+                                <option *ngFor="let role of roles" [value]="role.roleName">{{ role.roleName }}</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <input type="file" formControlName="imageUrl" class="form-control" id="imageUrl"
+                                accept="image/*" (change)="uploadFile($event)">
+                        </div>
+                        <br>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal"> <i
+                                    class="fa fa-cancel"></i>Cancelar</button>
+                            <button type="button" class="btn btn-success btn-sm" data-bs-dismiss="modal"
+                                (click)="addUser()"><i class="fa fa-save"></i>Agregar </button>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
+
 </div>
