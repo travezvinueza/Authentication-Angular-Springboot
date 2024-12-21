@@ -29,10 +29,12 @@ export class AuthService {
     );
   }
 
-  registerUser(userDto: UserDto, image: File): Observable<UserDto> {
+  registerUser(userDto: UserDto, image?: File): Observable<UserDto> {
     const formData = new FormData();
     formData.append('userDto', new Blob([JSON.stringify(userDto)], { type: 'application/json' }));
-    formData.append('imageProfile', image);
+    if (image) {
+      formData.append('imageProfile', image);
+    }
     return this.http.post<UserDto>(`${this.baseUrl}/register`, formData);
   }
 

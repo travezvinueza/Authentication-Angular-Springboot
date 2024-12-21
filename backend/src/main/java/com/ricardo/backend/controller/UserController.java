@@ -20,12 +20,6 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public ResponseEntity<UserDto> createUser(@RequestPart UserDto userDto,
-                                              @RequestPart(required = false) MultipartFile imageProfile) throws IOException {
-        return new ResponseEntity<>(userService.createUser(userDto, imageProfile), HttpStatus.CREATED);
-    }
-
     @PutMapping(value = "/update", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<UserDto> updateUser(@RequestPart UserDto userDto,
                                               @RequestPart(required = false) MultipartFile newImage) throws IOException {

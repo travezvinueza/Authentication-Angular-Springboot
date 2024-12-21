@@ -31,37 +31,6 @@ public class UserServiceImpl implements UserService {
     private final FileUploadService fileUploadService;
 
     @Override
-    public UserDto createUser(UserDto userDto, MultipartFile imageProfile) throws IOException {
-        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
-            throw new UserNotFoundException("El usuario ya existe con el email: " + userDto.getEmail());
-        }
-
-        Role defaultRole = roleRepository.findByRoleName("USER")
-                .orElseThrow(() -> new RoleNotFoundException("Rol predeterminado 'USER' no encontrado"));
-
-        List<Role> roles = userDto.getRoles() != null && !userDto.getRoles().isEmpty()
-                ? userDto.getRoles().stream()
-                .map(roleDto -> roleRepository.findByRoleName(roleDto.getRoleName())
-                        .orElseThrow(() -> new RoleNotFoundException("Rol no encontrado: " + roleDto.getRoleName())))
-                .toList()
-                : List.of(defaultRole);
-
-        User user = User.builder()
-                .username(userDto.getUsername())
-                .password(passwordEncoder.encode(userDto.getPassword()))
-                .email(userDto.getEmail())
-                .roles(roles)
-                .accountLocked(userDto.isAccountLocked())
-                .build();
-
-        String image = fileUploadService.uploadFile(imageProfile);
-        user.setImageProfile(image);
-        User savedUser = userRepository.save(user);
-
-        return mapUserToDto(savedUser);
-    }
-
-    @Override
     public UserDto updateUser(UserDto userDto, MultipartFile newImage) throws IOException {
         User user = userRepository.findById(userDto.getId())
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado con ID: " + userDto.getId()));

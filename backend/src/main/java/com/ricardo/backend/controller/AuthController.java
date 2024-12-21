@@ -24,7 +24,7 @@ public class AuthController {
 
     @PostMapping(value = "/register", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<ReqRes> register(@RequestPart UserDto userDto,
-                                           @RequestPart MultipartFile imageProfile) throws IOException {
+                                           @RequestPart(required = false) MultipartFile imageProfile) throws IOException {
         String imageFile = fileUploadService.uploadFile(imageProfile);
         userDto.setImageProfile(imageFile);
         return new ResponseEntity<>(authService.register(userDto), HttpStatus.CREATED);

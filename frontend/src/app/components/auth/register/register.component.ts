@@ -35,7 +35,6 @@ export class RegisterComponent implements OnInit{
         imageProfile: [null],
         // roles: [[], Validators.required],
       });
-  
      }
 
      register(): void {
@@ -44,17 +43,12 @@ export class RegisterComponent implements OnInit{
         return;
       }
   
-      if (!this.selectedFile) {
-        this.msgService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Debes seleccionar una imagen de perfil.' });
-        return;
-      }
-  
       const userDto: UserDto = this.formUser.value;
       
-      this.authService.registerUser(userDto, this.selectedFile).subscribe({
+      this.authService.registerUser(userDto, this.selectedFile || undefined).subscribe({
         next: () => {
           this.msgService.add({ severity: 'success', summary: 'Éxito', detail: 'Usuario registrado exitosamente.' });
-          this.router.navigate(['/login']); // Redirige al login después del registro exitoso.
+          this.router.navigate(['/login']); 
         },
         error: (error: HttpErrorResponse) => {
           console.error('Error:', error.error);

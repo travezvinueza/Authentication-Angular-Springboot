@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.util.List;
 
 public interface UserService {
+    UserDto createUser(UserDto userDto, MultipartFile imageProfile) throws IOException;
 
     UserDto updateUser(UserDto userDto, MultipartFile newImage) throws IOException;
 

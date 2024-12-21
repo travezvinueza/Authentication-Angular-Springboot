@@ -10,6 +10,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { UserEditComponent } from "../user-edit/user-edit.component";
 import { RoleService } from '../../../services/role.service';
 import { RoleDto } from '../../../interfaces/RoleDto';
+import { AuthService } from '../../../services/auth.service';
 
 declare let $: any;
 
@@ -41,6 +42,7 @@ export class UserListComponent implements OnInit {
   constructor(
     private readonly formBuilder: FormBuilder,
     private readonly adminService: AdminService,
+    private readonly authService: AuthService,
     private readonly roleService: RoleService,
     private readonly msgService: MessageService,
   ) { }
@@ -80,10 +82,9 @@ export class UserListComponent implements OnInit {
     });
   }
 
-  addUser() {
+  createUser() {
     const newUser = this.userDetail.value;
-
-    this.adminService.createUser(newUser, this.selectedFile || undefined)
+    this.authService.registerUser(newUser, this.selectedFile || undefined)
       .subscribe({
         next: () => {
           this.msgService.add({

@@ -8,23 +8,13 @@ import { Observable } from 'rxjs';
   providedIn: 'root',
 })
 export class AdminService {
-  
+
   private readonly baseUrl = environment.apiUrl + '/users';
 
-  constructor(private readonly http: HttpClient) {}
+  constructor(private readonly http: HttpClient) { }
 
   getAllListUser(): Observable<UserDto[]> {
     return this.http.get<UserDto[]>(`${this.baseUrl}/list`);
-  }
-
-  createUser(userDto: UserDto, imageUrl?: File): Observable<UserDto> {
-    const formData = new FormData();
-    formData.append('userDto', new Blob([JSON.stringify(userDto)], { type: 'application/json' }));
-    if (imageUrl) {
-      formData.append('imageProfile', imageUrl);
-    }
-
-    return this.http.post<UserDto>(`${this.baseUrl}/create`, formData);
   }
 
   getUserById(id: number): Observable<UserDto> {
@@ -37,11 +27,10 @@ export class AdminService {
     if (image) {
       formData.append('newImage', image);
     }
-  
     return this.http.put<UserDto>(`${this.baseUrl}/update`, formData);
   }
 
-   blockUser(id: number): Observable<UserDto> {
+  blockUser(id: number): Observable<UserDto> {
     return this.http.put<UserDto>(`${this.baseUrl}/${id}/block`, null);
   }
 
