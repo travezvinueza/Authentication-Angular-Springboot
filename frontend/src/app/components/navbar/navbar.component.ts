@@ -29,14 +29,14 @@ export class NavbarComponent implements OnInit {
   ngOnInit(): void {
     this.authSubscription = this.authService.authenticated$.subscribe((isAuthenticated) => {
       this.isAuthenticated = isAuthenticated;
-      this.isAdmin = this.authService.isAdmin();
+      this.isAdmin = this.authService.isAuthenticatedAdmin();
       this.isUser = !this.isAdmin; 
       if (this.isAuthenticated) {
          this.userImage = this.authService.getUserImage();
       }
     });
     // Verificar roles iniciales
-    this.isAdmin = this.authService.isAdmin();
+    this.isAdmin = this.authService.isAuthenticatedAdmin();
     this.isUser = !this.isAdmin;
   }
 

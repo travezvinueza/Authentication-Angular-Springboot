@@ -30,12 +30,10 @@ export class AdminService {
     return this.http.put<UserDto>(`${this.baseUrl}/update`, formData);
   }
 
-  blockUser(id: number): Observable<UserDto> {
-    return this.http.put<UserDto>(`${this.baseUrl}/${id}/block`, null);
-  }
-
-  unblockUser(id: number): Observable<UserDto> {
-    return this.http.put<UserDto>(`${this.baseUrl}/${id}/unblock`, null);
+  lockUser(id: number, locked: boolean): Observable<any> {
+    const url = `${this.baseUrl}/${id}/locked`;
+    const params = { locked: locked.toString() };
+    return this.http.put<any>(url, null, { params });
   }
 
   deleteUser(id: number): Observable<void> {

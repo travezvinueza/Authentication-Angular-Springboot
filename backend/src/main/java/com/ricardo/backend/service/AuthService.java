@@ -1,15 +1,15 @@
 package com.ricardo.backend.service;
 
+import com.ricardo.backend.dto.JwtResponse;
 import com.ricardo.backend.dto.LoginDto;
 import com.ricardo.backend.dto.UserDto;
-import com.ricardo.backend.dto.ReqRes;
 
 public interface AuthService {
-    ReqRes login(LoginDto loginDto);
+    JwtResponse login(LoginDto loginDto);
 
-    ReqRes register(UserDto userDto);
+    UserDto register(UserDto userDto);
 
-    ReqRes forgotPassword(String email);
+    String forgotPassword(String email);
 
-    ReqRes resetPassword(String otp, String newPassword);
+    String resetPassword(String otp, String newPassword);
 }

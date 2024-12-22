@@ -22,7 +22,7 @@ public class Swagger implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOriginPatterns("*")   // .allowedOriginPatterns("https://backend-misty-tree-6330.fly.dev", "http://localhost:8080", "http://localhost:4200", "*")
+                .allowedOriginPatterns("*")   // .allowedOriginPatterns("http://localhost:4200", "http://localhost:8080", "*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
                 .allowedHeaders("*")
                 .allowCredentials(true);

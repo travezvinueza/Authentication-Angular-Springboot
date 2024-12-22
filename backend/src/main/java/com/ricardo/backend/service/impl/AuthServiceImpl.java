@@ -9,7 +9,7 @@ import com.ricardo.backend.repositoty.RoleRepository;
 import com.ricardo.backend.repositoty.UserRepository;
 import com.ricardo.backend.service.AuthService;
 import com.ricardo.backend.service.EmailService;
-import com.ricardo.backend.util.JwtHelper;
+import com.ricardo.backend.util.JwtGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -25,98 +25,63 @@ import java.util.List;
 public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
-    private final JwtHelper jwtHelper;
+    private final JwtGenerator jwtGenerator;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
     private final SecureRandom secureRandom = new SecureRandom();
     private final EmailService emailService;
 
     @Override
-    public ReqRes login(LoginDto loginDto) {
+    public JwtResponse login(LoginDto loginDto) {
         try {
-
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword())
             );
 
             User user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow();
-            if(user.isAccountLocked()){
-                return ReqRes.builder()
-                        .statusCode(401)
-                        .message("La cuenta está bloqueada. Por favor, contacte con soporte.")
-                        .build();
+            if (user.isAccountLocked()) {
+                throw new UserNotFoundException("Cuenta bloqueada");
             }
-            String jwt = jwtHelper.generateToken(user);
-//            String refreshToken = jwtHelper.generateRefreshToken(new HashMap<>(), user);
+            String jwt = jwtGenerator.generateToken(user);
+            String imageProfile = user.getImageProfile();
+ //          String refreshToken = jwtGenerator.generateRefreshToken(new HashMap<>(), user);
 
-            return ReqRes.builder()
-                    .statusCode(200)
-                    .message("Inicio de sesion exitoso")
-                    .token(jwt)
-                    .roles(user.getRoles().stream()
-                            .map(role -> new RoleDto(role.getId(), role.getRoleName()))
-                            .toList())
-//                    .refreshToken(refreshToken)
-                    .expirationTime("24Horas")
-                    .imageProfile(user.getImageProfile())
-                    .build();
+            return new JwtResponse(jwt, imageProfile);
         } catch (BadCredentialsException e) {
             throw new UserNotFoundException("Credenciales inválidas");
-        } catch (Exception e) {
-            throw new UserNotFoundException("Error al autenticar el usuario: " + e.getMessage());
         }
     }
 
     @Override
-    public ReqRes register(UserDto userDto) {
-        try {
-
-            if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
-                throw new UserNotFoundException("El usuario ya existe");
-            }
-
-            Role defaultRole = roleRepository.findByRoleName("USER")
-                    .orElseThrow(() -> new RoleNotFoundException("Rol predeterminado 'USER' no encontrado"));
-
-            List<Role> roles = userDto.getRoles() != null && !userDto.getRoles().isEmpty()
-                    ? userDto.getRoles().stream()
-                    .map(roleDto -> roleRepository.findByRoleName(roleDto.getRoleName())
-                            .orElseThrow(() -> new RoleNotFoundException("Rol no encontrado: " + roleDto.getRoleName())))
-                    .toList()
-                    : List.of(defaultRole);
-
-            User newUser = User.builder()
-                    .username(userDto.getUsername())
-                    .password(passwordEncoder.encode(userDto.getPassword()))
-                    .email(userDto.getEmail())
-                    .imageProfile(userDto.getImageProfile())
-                    .roles(roles)
-                    .accountLocked(false)
-                    .build();
-
-            User savedUser = userRepository.save(newUser);
-
-            return ReqRes.builder()
-                    .id(savedUser.getId())
-                    .username(savedUser.getUsername())
-                    .password(savedUser.getPassword())
-                    .imageProfile(savedUser.getImageProfile())
-                    .email(savedUser.getEmail())
-                    .otp(savedUser.getOtp())
-                    .roles(savedUser.getRoles().stream()
-                            .map(role -> new RoleDto(role.getId(), role.getRoleName()))
-                            .toList())
-                    .message("Usuario registrado exitosamente")
-                    .statusCode(200)
-                    .accountLocked(savedUser.isAccountLocked())
-                    .build();
-        } catch (Exception e) {
-            throw new UserNotFoundException("Error al registrar el usuario: " + e.getMessage());
+    public UserDto register(UserDto userDto) {
+        if (userRepository.findByEmail(userDto.getEmail()).isPresent()) {
+            throw new UserNotFoundException("El usuario ya existe");
         }
+
+        Role defaultRole = roleRepository.findByRoleName("USER")
+                .orElseThrow(() -> new RoleNotFoundException("Rol predeterminado 'USER' no encontrado"));
+
+        List<Role> roles = userDto.getRoles() != null && !userDto.getRoles().isEmpty()
+                ? userDto.getRoles().stream()
+                .map(roleDto -> roleRepository.findByRoleName(roleDto.getRoleName())
+                        .orElseThrow(() -> new RoleNotFoundException("Rol no encontrado: " + roleDto.getRoleName())))
+                .toList()
+                : List.of(defaultRole);
+
+        User newUser = new User();
+        newUser.setUsername(userDto.getUsername());
+        newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        newUser.setEmail(userDto.getEmail());
+        newUser.setImageProfile(userDto.getImageProfile());
+        newUser.setRoles(roles);
+        newUser.setAccountLocked(false);
+
+        userRepository.save(newUser);
+        return userDto;
     }
 
     @Override
-    public ReqRes forgotPassword(String email) {
+    public String forgotPassword(String email) {
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -127,26 +92,18 @@ public class AuthServiceImpl implements AuthService {
         String subject = "Restablecimiento de contraseña";
         String body = "Tu OTP para restablecer la contraseña es: " + otp;
         emailService.sendEmail(email, subject, body);
-
-        return ReqRes.builder()
-                .statusCode(200)
-                .message("OTP enviado con éxito")
-                .build();
+        return "Se a enviado un OTP al correo: " + email;
     }
 
     @Override
-    public ReqRes resetPassword(String otp, String newPassword) {
+    public String resetPassword(String otp, String newPassword) {
         User userOtp = userRepository.findByOtp(otp)
                 .orElseThrow(() -> new RuntimeException("OTP no encontrado"));
 
         userOtp.setPassword(passwordEncoder.encode(newPassword));
         userOtp.setOtp(null);
         userRepository.save(userOtp);
-
-        return ReqRes.builder()
-                .statusCode(200)
-                .message("Contraseña restablecida exitosamente")
-                .build();
+        return "Contraseña restablecida exitosamente";
     }
 
     private String generateOTP() {

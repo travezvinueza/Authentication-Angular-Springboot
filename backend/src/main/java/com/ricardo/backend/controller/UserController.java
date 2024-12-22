@@ -1,6 +1,5 @@
 package com.ricardo.backend.controller;
 
-import com.ricardo.backend.dto.ReqRes;
 import com.ricardo.backend.dto.UserDto;
 import com.ricardo.backend.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -36,14 +35,10 @@ public class UserController {
         return new ResponseEntity<>(userService.getUserById(id), HttpStatus.OK);
     }
 
-    @PutMapping("/{id}/block")
-    public ResponseEntity<ReqRes> blockUser(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.blockUser(id), HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}/unblock")
-    public ResponseEntity<ReqRes> unblockUser(@PathVariable Long id) {
-        return new ResponseEntity<>(userService.unlockUser(id), HttpStatus.OK);
+    @PutMapping("/{id}/locked")
+    public ResponseEntity<UserDto> lockedUser(@PathVariable Long id,
+                                              @RequestParam boolean locked) {
+        return new ResponseEntity<>(userService.lockedUser(id, locked), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

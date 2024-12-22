@@ -48,6 +48,7 @@ export class UserListComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.authService.startTokenRefresh();
     this.getAllUsers();
     this.userDetail = this.formBuilder.group({
       id: [0],
@@ -101,31 +102,27 @@ export class UserListComponent implements OnInit {
       });
   }
 
-  blockUser(id: number) {
-    this.adminService.blockUser(id).subscribe({
+  toggleLock(userId: number, locked: boolean): void {
+    this.adminService.lockUser(userId, locked).subscribe({
       next: () => {
+        const message = locked
+          ? 'Usuario Bloqueado'
+          : 'Usuario Desbloqueado.';
         this.msgService.add({
           severity: 'info',
           summary: 'Éxito',
-          detail: 'Usuario bloqueado exitosamente.',
+          detail: message,
         });
-        this.getAllUsers();
+        this.getAllUsers(); 
       },
-      error: (error: HttpErrorResponse) => console.error(error),
-    });
-  }
-
-  unblockUser(id: number) {
-    this.adminService.unblockUser(id).subscribe({
-      next: () => {
+      error: (error: HttpErrorResponse) => {
+        console.error('Error al bloquear/desbloquear usuario:', error);
         this.msgService.add({
-          severity: 'success',
-          summary: 'Éxito',
-          detail: 'Usuario desbloqueado exitosamente.',
+          severity: 'error',
+          summary: 'Error',
+          detail: 'No se pudo cambiar el estado del usuario.',
         });
-        this.getAllUsers();
       },
-      error: (error: HttpErrorResponse) => console.error(error),
     });
   }
 

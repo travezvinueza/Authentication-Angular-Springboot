@@ -42,6 +42,11 @@ export class RegisterComponent implements OnInit{
         this.msgService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor completa todos los campos requeridos.' });
         return;
       }
+
+      if (!this.selectedFile) {
+        this.msgService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor selecciona una imagen de perfil.' });
+        return;
+      }
   
       const userDto: UserDto = this.formUser.value;
       

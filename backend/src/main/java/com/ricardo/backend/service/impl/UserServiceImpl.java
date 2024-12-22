@@ -1,6 +1,5 @@
 package com.ricardo.backend.service.impl;
 
-import com.ricardo.backend.dto.ReqRes;
 import com.ricardo.backend.dto.RoleDto;
 import com.ricardo.backend.dto.UserDto;
 import com.ricardo.backend.entity.Role;
@@ -98,41 +97,13 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public ReqRes blockUser(Long id) {
+    public UserDto lockedUser(Long id, boolean locked) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
 
-        if (user.isAccountLocked()) {
-            throw new UserNotFoundException("El usuario ya está bloqueado");
-        }
-
-        user.setAccountLocked(true);
+        user.setAccountLocked(locked);
         userRepository.save(user);
-
-        return ReqRes.builder()
-                .statusCode(200)
-                .message("Usuario bloqueado exitosamente")
-                .accountLocked(true)
-                .build();
-    }
-
-    @Override
-    public ReqRes unlockUser(Long id) {
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Usuario no encontrado"));
-
-        if (!user.isAccountLocked()) {
-            throw new UserNotFoundException("El usuario ya está desbloqueado");
-        }
-
-        user.setAccountLocked(false);
-        userRepository.save(user);
-
-        return ReqRes.builder()
-                .statusCode(200)
-                .message("Usuario desbloqueado exitosamente")
-                .accountLocked(false)
-                .build();
+        return mapUserToDto(user);
     }
 
     // Método auxiliar para mapear User a UserDto
@@ -142,7 +113,7 @@ public class UserServiceImpl implements UserService {
                 .username(user.getUsername())
                 .email(user.getEmail())
                 .imageProfile(user.getImageProfile())
-                .password(user.getPassword())
+                .password(null)
                 .roles(user.getRoles().stream()
                         .map(role -> RoleDto.builder()
                                 .id(role.getId())
