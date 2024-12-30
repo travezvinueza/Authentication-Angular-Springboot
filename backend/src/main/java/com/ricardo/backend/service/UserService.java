@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserService {
     UserDto updateUser(UserDto userDto, MultipartFile newImage) throws IOException;
 
-    void deleteUser(Long id) throws IOException;
+    void deleteUser(Long id);
 
     List<UserDto> getAllUsers();
 

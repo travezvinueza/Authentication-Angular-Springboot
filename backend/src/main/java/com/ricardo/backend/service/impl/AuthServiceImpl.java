@@ -89,8 +89,8 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public String forgotPassword(String email) {
-        User user = userRepository.findByEmail(email)
+    public ForgetPassRequest forgetPassword(ForgetPassRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         String otp = generateOTP();
@@ -99,19 +99,19 @@ public class AuthServiceImpl implements AuthService {
 
         String subject = "Restablecimiento de contraseña";
         String body = "Tu OTP para restablecer la contraseña es: " + otp;
-        emailService.sendEmail(email, subject, body);
-        return "Se a enviado un OTP al correo: ";
+        emailService.sendEmail(request.getEmail(), subject, body);
+        return request;
     }
 
     @Override
-    public String resetPassword(String otp, String newPassword) {
-        User userOtp = userRepository.findByOtp(otp)
+    public ResetPassRequest resetPassword(ResetPassRequest request) {
+        User userOtp = userRepository.findByOtp(request.getOtp())
                 .orElseThrow(() -> new RuntimeException("OTP no encontrado"));
 
-        userOtp.setPassword(passwordEncoder.encode(newPassword));
+        userOtp.setPassword(passwordEncoder.encode(request.getNewPassword()));
         userOtp.setOtp(null);
         userRepository.save(userOtp);
-        return "Contraseña restablecida exitosamente";
+        return request;
     }
 
     private String generateOTP() {

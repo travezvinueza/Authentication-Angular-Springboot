@@ -40,15 +40,14 @@ export class AuthService {
     return this.http.post<UserDto>(`${this.baseUrl}/register`, formData);
   }
 
-  forgotPassword(email: string): Observable<UserDto> {
-    const params = new HttpParams().set('email', email);
-    return this.http.post<UserDto>(`${this.baseUrl}/forgot-password`, null, { params });
+  forgotPassword(email: string): Observable<any> {
+    const request = { email };
+    return this.http.post<any>(`${this.baseUrl}/forget-password`, request);
   }
 
   resetPassword(otp: string, newPassword: string): Observable<any> {
-    const params = new HttpParams()
-      .set('otp', otp).set('newPassword', newPassword);
-    return this.http.post<any>(`${this.baseUrl}/reset-password`, null, { params });
+    const request = { otp, newPassword };
+    return this.http.post<any>(`${this.baseUrl}/reset-password`, request);
   }
 
   refreshToken(): Observable<string> {
