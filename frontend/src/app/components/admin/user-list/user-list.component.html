@@ -13,6 +13,7 @@
                     <th>ID</th>
                     <th>Image</th>
                     <th>Username</th>
+                    <th>CreationDate</th>
                     <th>Email</th>
                     <th>Roles</th>
                     <th class="text-center">lock / unlock</th>
@@ -27,7 +28,8 @@
                             class="align-items-lg-center"
                             style="max-width: 100px; max-height: 100px; border-radius: 50%;" />
                     </td>
-                    <td>{{ user.username }}</td>
+                    <td>{{ user.name }}</td>
+                    <td>{{ user.creationDate | date:'yyyy-MM-dd HH:mm' }}</td>
                     <td>{{ user.email }}</td>
                     <td>
                         <span *ngFor="let role of user.roles; let isLast = last">
@@ -79,7 +81,7 @@
                         </div>
 
                         <div class="mb-3">
-                            <input type="text" formControlName="username" class="form-control" id="username"
+                            <input type="text" formControlName="name" class="form-control" id="name"
                                 placeholder="Username" required>
                         </div>
                         <div class="mb-3">

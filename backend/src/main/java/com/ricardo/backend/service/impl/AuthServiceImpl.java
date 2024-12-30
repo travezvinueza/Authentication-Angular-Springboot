@@ -3,8 +3,10 @@ package com.ricardo.backend.service.impl;
 import com.ricardo.backend.dto.*;
 import com.ricardo.backend.entity.Role;
 import com.ricardo.backend.entity.User;
+import com.ricardo.backend.exception.AccountLockedException;
 import com.ricardo.backend.exception.RoleNotFoundException;
 import com.ricardo.backend.exception.UserNotFoundException;
+import com.ricardo.backend.mapper.UserMapper;
 import com.ricardo.backend.repositoty.RoleRepository;
 import com.ricardo.backend.repositoty.UserRepository;
 import com.ricardo.backend.service.AuthService;
@@ -13,9 +15,12 @@ import com.ricardo.backend.util.JwtGenerator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 
 import java.security.SecureRandom;
 import java.util.List;
@@ -34,21 +39,21 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public JwtResponse login(LoginDto loginDto) {
         try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(loginDto.getUsername(), loginDto.getPassword())
+            Authentication authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginDto.getEmail(),
+                            loginDto.getPassword())
             );
 
-            User user = userRepository.findByUsername(loginDto.getUsername()).orElseThrow();
-            if (user.isAccountLocked()) {
-                throw new UserNotFoundException("Cuenta bloqueada");
-            }
-            String jwt = jwtGenerator.generateToken(user);
-            String imageProfile = user.getImageProfile();
+            User user = (User) authentication.getPrincipal();
+            String accessToken = jwtGenerator.generateToken(user);
  //          String refreshToken = jwtGenerator.generateRefreshToken(new HashMap<>(), user);
 
-            return new JwtResponse(jwt, imageProfile);
+            return new JwtResponse(accessToken, user.getImageProfile());
+        } catch (LockedException e) {
+            throw new AccountLockedException("La cuenta está bloqueada. Contacta al administrador.");
         } catch (BadCredentialsException e) {
-            throw new UserNotFoundException("Credenciales inválidas");
+            throw new UserNotFoundException("Usuario o contraseña incorrectos.");
         }
     }
 
@@ -69,14 +74,17 @@ public class AuthServiceImpl implements AuthService {
                 : List.of(defaultRole);
 
         User newUser = new User();
-        newUser.setUsername(userDto.getUsername());
+        newUser.setName(userDto.getName());
         newUser.setPassword(passwordEncoder.encode(userDto.getPassword()));
         newUser.setEmail(userDto.getEmail());
         newUser.setImageProfile(userDto.getImageProfile());
+        newUser.setCreationDate(userDto.getCreationDate());
         newUser.setRoles(roles);
         newUser.setAccountLocked(false);
 
         userRepository.save(newUser);
+        userDto.setPassword(passwordEncoder.encode(userDto.getPassword()));
+        userDto.setCreationDate(newUser.getCreationDate());
         return userDto;
     }
 
@@ -92,7 +100,7 @@ public class AuthServiceImpl implements AuthService {
         String subject = "Restablecimiento de contraseña";
         String body = "Tu OTP para restablecer la contraseña es: " + otp;
         emailService.sendEmail(email, subject, body);
-        return "Se a enviado un OTP al correo: " + email;
+        return "Se a enviado un OTP al correo: ";
     }
 
     @Override

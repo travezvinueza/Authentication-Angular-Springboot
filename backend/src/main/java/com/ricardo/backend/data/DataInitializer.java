@@ -52,14 +52,14 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
     }
 
     private void createDefaultUserIfNotExists(DefaultUserData userData) {
-        if (userRepository.findByUsername(userData.username()).isEmpty()) {
+        if (userRepository.findByEmail(userData.email()).isEmpty()) {
             List<Role> roles = userData.roleNames().stream()
                     .map(roleName -> roleRepository.findByRoleName(roleName)
                             .orElseThrow(() -> new RuntimeException("El rol " + roleName + " no fue encontrado")))
                     .toList();
 
             User user = User.builder()
-                    .username(userData.username())
+                    .name(userData.name())
                     .password(passwordEncoder.encode(userData.password()))
                     .email(userData.email())
                     .imageProfile(userData.image())
@@ -70,7 +70,7 @@ public class DataInitializer implements ApplicationListener<ApplicationReadyEven
             userRepository.save(user);
             log.info(userData.successMessage());
         } else {
-            log.info("El usuario ya existente: {}{}", userData.username(), userData.roleNames());
+            log.info("El usuario ya existente: {}{}", userData.name(), userData.roleNames());
         }
     }
 }

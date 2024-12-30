@@ -22,8 +22,8 @@ export class AuthService {
     private readonly http: HttpClient,
     private readonly msService: MessageService) { }
 
-  login(username: string, password: string): Observable<UserDto> {
-    const body = { username, password };
+  login(email: string, password: string): Observable<UserDto> {
+    const body = { email, password };
     return this.http.post<UserDto>(`${this.baseUrl}/login`, body).pipe(
       tap((user: UserDto) => {
         localStorage.setItem('token', user.token);
@@ -71,25 +71,27 @@ export class AuthService {
       console.warn('Token inválido o sin información de expiración.');
       return;
     }
-    const expirationTime = decoded.exp * 1000; // Tiempo de expiración del token en milisegundos
-    const timeRemaining = expirationTime - Date.now(); // Calcular el tiempo restante antes de la expiración
-    const refreshTime = timeRemaining - 30 * 1000; // Configurar el refresco 30 segundos antes de que expire el token
-
+  
+    const expirationTime = decoded.exp * 1000; // Tiempo de expiración en milisegundos
+    const refreshTime = expirationTime - Date.now() - 1 * 60 * 1000; 
+  
     if (refreshTime > 0) {
       setTimeout(() => {
-        this.refreshToken().subscribe({
-          next: () => {
-            console.info('Token refrescado automáticamente.');
-            this.startTokenRefresh();  // Volver a programar el próximo refresco
-          },
-          error: () => {
-            console.warn('No se pudo refrescar el token automáticamente.');
-          },
-        });
+        this.showConfirmation();
       }, refreshTime);
     } else {
       console.warn('El tiempo restante es insuficiente para refrescar el token.');
     }
+  }
+  
+  showConfirmation(): void {
+    this.msService.add({
+      key: 'confirm',
+      sticky: true,
+      severity: 'info',
+      summary: 'AUTENTICACIÓN',
+      detail: 'La Sesion esta a punto de expirar ¿Quieres permanecer en la aplicación?',
+    });
   }
 
   /** Decodifica el token JWT */

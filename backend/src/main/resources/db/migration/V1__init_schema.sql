@@ -7,11 +7,12 @@ CREATE TABLE roles (
 -- Crear tabla users
 CREATE TABLE users (
     id BIGSERIAL PRIMARY KEY,
-    username VARCHAR(255) NOT NULL UNIQUE,
+    name VARCHAR(255) NOT NULL,
     password VARCHAR(255) NOT NULL,
-    email VARCHAR(255),
+    email VARCHAR(255) NOT NULL UNIQUE,
     image_profile VARCHAR(255),
     otp VARCHAR(255),
+    creation_date TIMESTAMP WITH TIME ZONE,
     account_locked BOOLEAN
 );
 

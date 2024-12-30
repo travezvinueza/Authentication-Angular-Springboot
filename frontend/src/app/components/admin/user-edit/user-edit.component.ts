@@ -35,9 +35,9 @@ export class UserEditComponent implements OnInit {
   ngOnInit(): void {
     this.userForm = this.formBuilder.group({
       id: [0],
-      username: [''],
+      name: [''],
       email: [''],
-      password: ['', [Validators.required, Validators.minLength(6)]],
+      password: [''],
       roles: [[]],
       imageProfile: [null],
       accountLocked: [false],

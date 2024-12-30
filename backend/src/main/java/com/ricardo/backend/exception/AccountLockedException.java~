@@ -1,0 +1,2 @@
+package com.ricardo.backend.exception;public class AccountLockedException {
+}

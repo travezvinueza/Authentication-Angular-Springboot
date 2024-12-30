@@ -2,10 +2,12 @@ package com.ricardo.backend.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.List;
 
@@ -20,16 +22,19 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column( name = "username", nullable = false, unique = true )
-    private String username;
+    @Column( name = "name", nullable = false )
+    private String name;
     @Column( name = "password", nullable = false )
     private String password;
-    @Column( name = "email", nullable = false)
+    @Column( name = "email", nullable = false, unique = true )
     private String email;
     @Column( name = "image_profile" )
     private String imageProfile;
     @Column( name = "otp" )
     private String otp;
+    @CreationTimestamp
+    @Column( name = "creation_date", nullable = false )
+    private Timestamp creationDate;
 
     @Column(name = "account_locked", nullable = false)
     private boolean accountLocked;
@@ -49,7 +54,7 @@ public class User implements UserDetails {
 
     @Override
     public String getUsername() {
-        return username;
+        return email;
     }
 
     @Override

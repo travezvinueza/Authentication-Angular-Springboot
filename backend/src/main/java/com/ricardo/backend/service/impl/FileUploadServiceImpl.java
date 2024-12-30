@@ -40,6 +40,10 @@ public class FileUploadServiceImpl implements FileUploadService {
     @Override
     public String uploadFile(MultipartFile file) throws IOException {
         if (!file.isEmpty()){
+            Path uploadPath = Paths.get(UPLOAD_FOLDER);
+            if (!Files.exists(uploadPath)) {
+                Files.createDirectories(uploadPath);
+            }
             byte [] bytes = file.getBytes();
             String originalFileName = Objects.requireNonNull(file.getOriginalFilename()); // Obtener el nombre original del archivo
             String sanitizedFileName = originalFileName.replaceAll("[^a-zA-Z0-9.]", "_");
@@ -53,9 +57,18 @@ public class FileUploadServiceImpl implements FileUploadService {
     }
 
     @Override
-    public void deleteUpload(String fileName) throws IOException {
+    public void deleteUpload(String fileUrl) throws IOException {
+        String fileName = extractFileNameFromUrl(fileUrl);
         Path path = Paths.get(UPLOAD_FOLDER, fileName);
-        Files.deleteIfExists(path);
+        if (Files.deleteIfExists(path)) {
+            log.info("Archivo eliminado: {}", fileName);
+        } else {
+            log.warn("No se pudo eliminar el archivo: {}", fileName);
+        }
+    }
+
+    private String extractFileNameFromUrl(String url) {
+        return url.substring(url.lastIndexOf("/") + 1); // Extraer el nombre después del último "/"
     }
 
 }

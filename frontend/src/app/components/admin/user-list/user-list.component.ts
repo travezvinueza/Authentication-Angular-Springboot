@@ -52,8 +52,8 @@ export class UserListComponent implements OnInit {
     this.getAllUsers();
     this.userDetail = this.formBuilder.group({
       id: [0],
-      username: [''],
-      password: ['',[Validators.required, Validators.minLength(6)]],
+      name: [''],
+      password: [''],
       email: [''],
       imageUrl: [null],
       roles2: [[]],

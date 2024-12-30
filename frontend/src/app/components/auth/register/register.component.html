@@ -8,17 +8,25 @@
             </div>
 
             <div class="form-group">
-                <input id="username" type="text" formControlName="username" placeholder="Username"
+                <input id="name" type="text" formControlName="name" placeholder="Username"
                     class="form-control" />
+
+                <div *ngIf="hasError('name', 'required')" class="text-danger">username is required</div>
             </div>
 
             <div class="form-group mt-3">
                 <input id="email" type="email" formControlName="email" placeholder="Email" class="form-control" />
+
+                <div *ngIf="hasError('email', 'required')" class="text-danger">email is required</div>
+                <div *ngIf="hasError('email', 'email')" class="text-danger">you must enter a valid email</div>
             </div>
 
             <div class="form-group mt-3">
                 <input id="password" type="password" formControlName="password" placeholder="Password"
                     class="form-control" />
+
+                <div *ngIf="hasError('password', 'required')" class="text-danger">password is required</div>
+                <div *ngIf="hasError('password', 'minlength')" class="text-danger">the password must be at least 6 characters long</div>
             </div>
 
             <!-- <div class="form-group mt-3">

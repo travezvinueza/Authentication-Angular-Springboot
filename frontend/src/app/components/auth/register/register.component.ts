@@ -11,11 +11,11 @@ import { UserDto } from '../../../interfaces/UserDto';
 
 @Component({
   selector: 'app-register',
-  imports: [ CommonModule, FormsModule, CardModule, InputTextModule, ReactiveFormsModule, RouterModule ],
+  imports: [CommonModule, FormsModule, CardModule, InputTextModule, ReactiveFormsModule, RouterModule],
   templateUrl: './register.component.html',
   styleUrl: './register.component.css'
 })
-export class RegisterComponent implements OnInit{
+export class RegisterComponent implements OnInit {
 
   formUser !: FormGroup;
   selectedFile: File | null = null;
@@ -25,61 +25,65 @@ export class RegisterComponent implements OnInit{
     private readonly formBuilder: FormBuilder,
     private readonly authService: AuthService,
     private readonly msgService: MessageService,
-    private readonly router: Router) {}
+    private readonly router: Router) { }
 
-     ngOnInit(): void {
-      this.formUser = this.formBuilder.group({
-        username: ['', [Validators.required]],
-        password: ['', [Validators.required]],
-        email: ['', [Validators.required, Validators.email]],
-        imageProfile: [null],
-        // roles: [[], Validators.required],
-      });
-     }
+  ngOnInit(): void {
+    this.formUser = this.formBuilder.group({
+      name: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      email: ['', [Validators.required, Validators.email]],
+      imageProfile: [null],
+      // roles: [[], Validators.required],
+    });
+  }
 
-     register(): void {
-      if (this.formUser.invalid) {
-        this.msgService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor completa todos los campos requeridos.' });
-        return;
-      }
+  // Método para verificar si un campo tiene errores y si fue tocado
+  hasError(field: string, error: string): boolean {
+    const control = this.formUser.get(field);
+    return control ? control.hasError(error) && (control.dirty || control.touched) : false;
+  }
 
-      if (!this.selectedFile) {
-        this.msgService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor selecciona una imagen de perfil.' });
-        return;
-      }
-  
-      const userDto: UserDto = this.formUser.value;
-      
-      this.authService.registerUser(userDto, this.selectedFile || undefined).subscribe({
-        next: () => {
-          this.msgService.add({ severity: 'success', summary: 'Éxito', detail: 'Usuario registrado exitosamente.' });
-          this.router.navigate(['/login']); 
-        },
-        error: (error: HttpErrorResponse) => {
-          console.error('Error:', error.error);
-          const errorMessage = error.error.message || 'Error al procesar la solicitud.';
-          this.msgService.add({ severity: 'error', summary: 'Error', detail: errorMessage });
-        },
-      });
-    }
-    
-    showPreview() {
-      if (this.selectedFile) {
-        const reader = new FileReader();
-        reader.onload = (e: any) => {
-          this.previewUrl = e.target.result;
-        };
-        reader.readAsDataURL(this.selectedFile);
-      }
+  register(): void {
+    if (this.formUser.invalid) {
+      this.msgService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Por favor completa todos los campos requeridos.' });
+      return;
     }
 
-    uploadFile(event: any) {
-      this.selectedFile = event.target.files[0];
-      this.showPreview();
+    const userDto: UserDto = this.formUser.value;
+
+    this.authService.registerUser(userDto, this.selectedFile || undefined).subscribe({
+      next: () => {
+        this.msgService.add({ severity: 'success', summary: 'Éxito', detail: 'Usuario registrado exitosamente.' });
+        // Almacenamos los datos en sessionStorage
+        sessionStorage.setItem('email', userDto.email);
+        sessionStorage.setItem('password', userDto.password);
+        this.router.navigate(['/login']);
+      },
+      error: (error: HttpErrorResponse) => {
+        console.error('Error:', error.error);
+        const errorMessage = error.error.message || 'Error al procesar la solicitud.';
+        this.msgService.add({ severity: 'error', summary: 'Error', detail: errorMessage });
+      },
+    });
+  }
+
+  showPreview() {
+    if (this.selectedFile) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.previewUrl = e.target.result;
+      };
+      reader.readAsDataURL(this.selectedFile);
     }
-  
-    redirectLogin(): void {
-      this.router.navigate(['/login']);
-    }
-  
+  }
+
+  uploadFile(event: any) {
+    this.selectedFile = event.target.files[0];
+    this.showPreview();
+  }
+
+  redirectLogin(): void {
+    this.router.navigate(['/login']);
+  }
+
 }

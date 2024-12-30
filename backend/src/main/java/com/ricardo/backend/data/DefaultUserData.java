@@ -3,7 +3,7 @@ package com.ricardo.backend.data;
 import java.util.Set;
 
 public record DefaultUserData(
-        String username,
+        String name,
         String password,
         String email,
         String image,
