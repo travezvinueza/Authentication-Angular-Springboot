@@ -1,0 +1,21 @@
+<!-- Mensaje de confirmacion Toas -->
+<p-toast position="center" key="confirm" [baseZIndex]="5000">
+  <ng-template let-message pTemplate="message">
+    <div class="flex flex-column" style="flex: 1">
+      <div class="text-center">
+        <strong>
+          <h4 class="text-danger">{{ message.summary }}</h4>
+        </strong>
+        <p class="text-black">{{ message.detail }}</p>
+      </div>
+      <div class="text-center">
+        <button class="btn btn-danger btn-sm me-2" (click)="confirm()">
+          <i class="fa fa-check"></i> Ok
+        </button>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="cancel()">
+          <i class="fa fa-times"></i> Logout
+        </button>
+      </div>
+    </div>
+  </ng-template>
+</p-toast>

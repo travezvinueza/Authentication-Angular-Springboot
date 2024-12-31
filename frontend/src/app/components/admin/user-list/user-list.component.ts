@@ -52,9 +52,9 @@ export class UserListComponent implements OnInit {
     this.getAllUsers();
     this.userDetail = this.formBuilder.group({
       id: [0],
-      name: [''],
-      password: [''],
-      email: [''],
+      name: ['', [Validators.required]],
+      password: ['', [Validators.required]],
+      email: ['', [Validators.required]],
       imageUrl: [null],
       roles2: [[]],
       locked: [false],
@@ -84,6 +84,10 @@ export class UserListComponent implements OnInit {
   }
 
   createUser() {
+    if (this.userDetail.invalid) {
+      this.msgService.add({ severity: 'warn', summary: 'Advertencia', detail: 'Todos los campos son requeridos' });
+      return;
+    }
     const newUser = this.userDetail.value;
     this.authService.registerUser(newUser, this.selectedFile || undefined)
       .subscribe({

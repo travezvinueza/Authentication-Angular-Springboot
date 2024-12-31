@@ -2,8 +2,8 @@ package com.ricardo.backend.data;
 
 import com.ricardo.backend.entity.Role;
 import com.ricardo.backend.entity.User;
-import com.ricardo.backend.repositoty.RoleRepository;
-import com.ricardo.backend.repositoty.UserRepository;
+import com.ricardo.backend.repository.RoleRepository;
+import com.ricardo.backend.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -39,7 +39,7 @@ public class UserMapperImpl implements UserMapper {
                 .id(user.getId())
                 .name(user.getName())
                 .email(user.getEmail())
-                .password(user.getPassword())
+                .password(null)
                 .imageProfile(user.getImageProfile())
                 .creationDate(user.getCreationDate())
                 .roles(user.getRoles().stream()

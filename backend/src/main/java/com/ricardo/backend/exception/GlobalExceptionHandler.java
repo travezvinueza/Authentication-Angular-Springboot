@@ -47,12 +47,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Map<String, Object>> handleAccountLockedException(AccountLockedException ex) {
         Map<String, Object> errorResponse = new HashMap<>();
         errorResponse.put("timestamp", LocalDateTime.now());
-        errorResponse.put("status", HttpStatus.UNAUTHORIZED.value()); // Cambiar a UNAUTHORIZED
+        errorResponse.put("status", HttpStatus.UNAUTHORIZED.value());
         errorResponse.put("error", "Unauthorized");
         errorResponse.put("message", ex.getMessage());
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse); // Cambiar a UNAUTHORIZED
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
     }
-
 
     @ExceptionHandler(EmailSendNotFoundException.class)
     public ResponseEntity<String> handleEmailNotFoundException(EmailSendNotFoundException ex) {

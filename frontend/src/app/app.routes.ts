@@ -8,7 +8,7 @@ import { ResetPasswordComponent } from './components/auth/reset-password/reset-p
 import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
 import { UserListComponent } from './components/admin/user-list/user-list.component';
 import { RoleComponent } from './components/admin/role/role.component';
-import { ProfileComponent } from './components/profile/profile.component';
+import { ProfileComponent } from './components/shared/profile/profile.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: '/login', pathMatch: 'full' }, 

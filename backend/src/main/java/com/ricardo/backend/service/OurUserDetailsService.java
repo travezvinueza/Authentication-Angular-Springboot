@@ -1,6 +1,6 @@
 package com.ricardo.backend.service;
 
-import com.ricardo.backend.repositoty.UserRepository;
+import com.ricardo.backend.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

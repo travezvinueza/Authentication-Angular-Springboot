@@ -1,4 +1,4 @@
-package com.ricardo.backend.repositoty;
+package com.ricardo.backend.repository;
 
 import com.ricardo.backend.entity.Role;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -3,7 +3,7 @@ package com.ricardo.backend.service.impl;
 import com.ricardo.backend.dto.RoleDto;
 import com.ricardo.backend.entity.Role;
 import com.ricardo.backend.exception.RoleNotFoundException;
-import com.ricardo.backend.repositoty.RoleRepository;
+import com.ricardo.backend.repository.RoleRepository;
 import com.ricardo.backend.service.RoleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

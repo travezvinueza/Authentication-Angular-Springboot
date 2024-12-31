@@ -28,15 +28,3 @@ En la aplicacion de contraseñas de google crear una contraseña e introducir en
 ```
   http://localhost:4200/
 ```
- 
-## Imagenes
-
-![App Screenshot](images/all-users.png)
-![App Screenshot](images/edit-users.png)
-![App Screenshot](images/role.png)
-![App Screenshot](images/login.png)
-![App Screenshot](images/register.png)
-![App Screenshot](images/forgot-password.png)
-![App Screenshot](images/reset-password.png)
-![App Screenshot](images/user-home.png)
-![App Screenshot](images/swagger.png)
