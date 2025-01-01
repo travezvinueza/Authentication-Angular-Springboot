@@ -109,11 +109,10 @@ export class UserListComponent implements OnInit {
   toggleLock(userId: number, locked: boolean): void {
     this.adminService.lockUser(userId, locked).subscribe({
       next: () => {
-        const message = locked
-          ? 'Usuario Bloqueado'
-          : 'Usuario Desbloqueado.';
+        const message = locked ? 'Usuario Bloqueado' : 'Usuario Desbloqueado.';
+        const severity = locked ? 'secondary' : 'info'; 
         this.msgService.add({
-          severity: 'info',
+          severity: severity,
           summary: 'Éxito',
           detail: message,
         });

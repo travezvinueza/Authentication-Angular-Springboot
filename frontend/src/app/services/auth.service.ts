@@ -11,6 +11,7 @@ import { MessageService } from 'primeng/api';
 export class AuthService {
 
   private readonly baseUrl = environment.apiUrl + '/auth';
+  private refreshTimeout: any;
 
   // Usamos BehaviorSubject para mantener el estado de la autenticación.
   private readonly authenticatedSubject = new BehaviorSubject<boolean>(
@@ -55,7 +56,7 @@ export class AuthService {
       map(response => response.token),
       tap(newToken => {
         localStorage.setItem('token', newToken);
-        this.msService.add({ severity: 'info', summary: 'TOKEN', detail: 'El token se ha actualizado correctamente.' });
+        this.msService.add({ severity: 'contrast', summary: 'TOKEN', detail: 'El token se ha actualizado correctamente.' });
       }),
       catchError(error => {
         this.msService.add({ severity: 'error', summary: 'Error', detail: 'No se pudo actualizar el token.' });
@@ -75,7 +76,7 @@ export class AuthService {
     const refreshTime = expirationTime - Date.now() - 1 * 60 * 1000; 
   
     if (refreshTime > 0) {
-      setTimeout(() => {
+      this.refreshTimeout = setTimeout(() => {
         this.showConfirmation();
       }, refreshTime);
     } else {
@@ -84,10 +85,11 @@ export class AuthService {
   }
   
   showConfirmation(): void {
+    this.msService.clear('confirm');
     this.msService.add({
       key: 'confirm',
       sticky: true,
-      severity: 'info',
+      severity: 'contrast',
       summary: 'AUTENTICACIÓN',
       detail: 'La Sesion esta a punto de expirar ¿Quieres permanecer en la aplicación?',
     });
@@ -145,6 +147,10 @@ export class AuthService {
   logOut(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('imageProfile');
+    if (this.refreshTimeout) {
+      clearTimeout(this.refreshTimeout); // Detener el ciclo de refresco
+      this.refreshTimeout = null; // Limpiar la referencia
+    }
     this.authenticatedSubject.next(false);
   }
 
