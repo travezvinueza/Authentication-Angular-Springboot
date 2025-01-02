@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { UserDto } from '../interfaces/UserDto';
-import { environment } from '../../environments/environment';
+import { environment } from '../../../environments/environment';
 import { MessageService } from 'primeng/api';
 
 @Injectable({

@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -46,7 +46,7 @@ export class ForgotPasswordComponent implements OnInit {
           summary: 'Success',
           detail: 'Password reset link sent successfully',
         });
-        this.router.navigate(['/reset-password']);
+        this.router.navigate(['/auth/reset-password']);
       },
       error: (error: HttpErrorResponse) => {
         this.messageService.add({
@@ -59,7 +59,7 @@ export class ForgotPasswordComponent implements OnInit {
   }
 
   redirectLogin(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 
 }

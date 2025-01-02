@@ -5,8 +5,8 @@ import { Router, RouterModule } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { InputTextModule } from 'primeng/inputtext';
-import { RoleDto } from '../../../interfaces/RoleDto';
-import { RoleService } from '../../../services/role.service';
+import { RoleDto } from '../../core/interfaces/RoleDto';
+import { RoleService } from '../../core/services/role.service';
 
 declare let $: any;
 

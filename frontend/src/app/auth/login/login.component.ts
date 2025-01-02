@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router, RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
 
@@ -82,11 +82,11 @@ export class LoginComponent implements OnInit {
   }
 
   redirectRegister(): void {
-    this.router.navigate(['/register']);
+    this.router.navigate(['/auth/register']);
   }
 
   redirectResetPassword(): void {
-    this.router.navigate(['/forgot-password']);
+    this.router.navigate(['/auth/forgot-password']);
   }
 
 }

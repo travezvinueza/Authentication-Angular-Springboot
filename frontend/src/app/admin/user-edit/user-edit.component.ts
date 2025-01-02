@@ -3,11 +3,11 @@ import { Component, EventEmitter, Input, OnInit, Output, SimpleChanges } from '@
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
-import { AdminService } from '../../../services/admin.service';
+import { AdminService } from '../../core/services/admin.service';
 import { MessageService } from 'primeng/api';
-import { RoleService } from '../../../services/role.service';
+import { RoleService } from '../../core/services/role.service';
 import { HttpErrorResponse } from '@angular/common/http';
-import { RoleDto } from '../../../interfaces/RoleDto';
+import { RoleDto } from '../../core/interfaces/RoleDto';
 
 @Component({
   selector: 'app-user-edit',

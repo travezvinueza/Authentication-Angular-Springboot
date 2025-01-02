@@ -4,10 +4,10 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } 
 import { Router, RouterModule } from '@angular/router';
 import { CardModule } from 'primeng/card';
 import { InputTextModule } from 'primeng/inputtext';
-import { AuthService } from '../../../services/auth.service';
+import { AuthService } from '../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
-import { UserDto } from '../../../interfaces/UserDto';
+import { UserDto } from '../../core/interfaces/UserDto';
 
 @Component({
   selector: 'app-register',
@@ -57,7 +57,7 @@ export class RegisterComponent implements OnInit {
         // Almacenamos los datos en sessionStorage
         sessionStorage.setItem('email', userDto.email);
         sessionStorage.setItem('password', userDto.password);
-        this.router.navigate(['/login']);
+        this.router.navigate(['/auth/login']);
       },
       error: (error: HttpErrorResponse) => {
         console.error('Error:', error.error);
@@ -83,7 +83,7 @@ export class RegisterComponent implements OnInit {
   }
 
   redirectLogin(): void {
-    this.router.navigate(['/login']);
+    this.router.navigate(['/auth/login']);
   }
 
 }

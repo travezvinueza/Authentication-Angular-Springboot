@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { InputTextModule } from 'primeng/inputtext';
 import { RouterModule } from '@angular/router';
-import { UserDto } from '../../../interfaces/UserDto';
-import { AdminService } from '../../../services/admin.service';
+import { UserDto } from '../../core/interfaces/UserDto';
+import { AdminService } from '../../core/services/admin.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserEditComponent } from "../user-edit/user-edit.component";
-import { RoleService } from '../../../services/role.service';
-import { RoleDto } from '../../../interfaces/RoleDto';
-import { AuthService } from '../../../services/auth.service';
+import { RoleService } from '../../core/services/role.service';
+import { RoleDto } from '../../core/interfaces/RoleDto';
+import { AuthService } from '../../core/services/auth.service';
 
 declare let $: any;
 

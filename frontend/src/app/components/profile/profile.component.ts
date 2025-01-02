@@ -5,7 +5,7 @@ import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule } from '@angul
 import { RouterModule } from '@angular/router';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageService } from 'primeng/api';
-import { AdminService } from '../../../services/admin.service';
+import { AdminService } from '../../core/services/admin.service';
 
 @Component({
   selector: 'app-profile',
