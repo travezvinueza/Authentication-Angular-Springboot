@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Signal, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
 import { UserDto } from '../interfaces/UserDto';
@@ -12,12 +12,11 @@ export class AuthService {
 
   private readonly baseUrl = environment.apiUrl + '/auth';
   private refreshTimeout: any;
+  private readonly rolesSignal = signal<string[]>(this.getDecodedToken()?.roles || []);
 
   // Usamos BehaviorSubject para mantener el estado de la autenticación.
-  private readonly authenticatedSubject = new BehaviorSubject<boolean>(
-    this.isAuthenticated()
-  );
-  authenticated$ = this.authenticatedSubject.asObservable();
+  // private readonly authenticatedSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
+  // authenticated$ = this.authenticatedSubject.asObservable();
 
   constructor(
     private readonly http: HttpClient,
@@ -29,7 +28,9 @@ export class AuthService {
       tap((user: UserDto) => {
         localStorage.setItem('token', user.token);
         localStorage.setItem('imageProfile', user.imageProfile ?? '');
-        this.authenticatedSubject.next(true);
+
+        this.updateRolesFromToken(user.token);
+        // this.authenticatedSubject.next(true);
       })
     );
   }
@@ -71,10 +72,10 @@ export class AuthService {
       console.warn('Token inválido o sin información de expiración.');
       return;
     }
-  
+
     const expirationTime = decoded.exp * 1000; // Tiempo de expiración en milisegundos
-    const refreshTime = expirationTime - Date.now() - 1 * 60 * 1000; 
-  
+    const refreshTime = expirationTime - Date.now() - 1 * 60 * 1000;
+
     if (refreshTime > 0) {
       this.refreshTimeout = setTimeout(() => {
         this.showConfirmation();
@@ -83,7 +84,7 @@ export class AuthService {
       console.warn('El tiempo restante es insuficiente para refrescar el token.');
     }
   }
-  
+
   showConfirmation(): void {
     this.msService.clear('confirm');
     this.msService.add({
@@ -121,27 +122,24 @@ export class AuthService {
 
   /** Verifica si el usuario tiene un rol específico */
   hasRole(role: string): boolean {
-    const decoded = this.getDecodedToken();
-    return decoded?.roles?.includes(role) ?? false;
+    return this.rolesSignal().includes(role);
   }
 
-  /** Obtiene los roles del usuario */
-  getRoles(): string[] {
-    const decoded = this.getDecodedToken();
-    return decoded?.roles || [];
+  /** Obtiene los roles del usuario (como signal) */
+  getRolesSignal(): Signal<string[]> {
+    return this.rolesSignal;
+  }
+
+  updateRolesFromToken(token: string): void {
+    const decodedToken = this.decodeToken(token);
+    const roles = decodedToken?.roles || [];
+    this.rolesSignal.set(roles); // Actualizar el signal
   }
 
   /** Verifica si el usuario está autenticado */
   isAuthenticated(): boolean {
-    return !this.isTokenExpired();
-  }
-
-  isAuthenticatedAdmin(): boolean {
-    return this.isAuthenticated() && this.hasRole('ADMIN');
-  }
-
-  isAuthenticatedUser(): boolean {
-    return this.isAuthenticated() && this.hasRole('USER');
+    const token = localStorage.getItem('token');
+    return token ? !this.isTokenExpired() : false;
   }
 
   logOut(): void {
@@ -151,12 +149,13 @@ export class AuthService {
       clearTimeout(this.refreshTimeout); // Detener el ciclo de refresco
       this.refreshTimeout = null; // Limpiar la referencia
     }
-    this.authenticatedSubject.next(false);
+    this.rolesSignal.set([]);
+    // this.authenticatedSubject.next(false);
   }
 
   getUserImage(): string {
     const imageUrl = localStorage.getItem('imageProfile');
-    return imageUrl ?? '';
+    return imageUrl?.trim() ? imageUrl : environment.defaultUserImage;
   }
 
 }

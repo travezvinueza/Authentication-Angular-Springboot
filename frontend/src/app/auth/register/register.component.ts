@@ -8,6 +8,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
 import { UserDto } from '../../core/interfaces/UserDto';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-register',
@@ -19,7 +20,7 @@ export class RegisterComponent implements OnInit {
 
   formUser !: FormGroup;
   selectedFile: File | null = null;
-  previewUrl: string | ArrayBuffer | null = null
+  previewUrl: string | ArrayBuffer | null = environment.defaultUserImage;
 
   constructor(
     private readonly formBuilder: FormBuilder,

@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export const adminGuard: CanActivateFn = (route, state) => {
-  if (inject(AuthService).isAuthenticatedAdmin()) {
+  if (inject(AuthService).isAuthenticated()) {
     return true;
   } else {
     inject(Router).navigate(['/auth/login']);

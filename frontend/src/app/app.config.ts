@@ -7,12 +7,14 @@ import { MessageService } from 'primeng/api';
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { provideClientHydration } from '@angular/platform-browser';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
+import { tokenInterceptor } from './core/interceptors/token.interceptor';
+import { errorInterceptor } from './core/interceptors/error.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [provideZoneChangeDetection({ eventCoalescing: true }),
      provideRouter(routes),
      provideClientHydration(),
-     provideHttpClient(withInterceptors([authInterceptor]), withFetch()),
+     provideHttpClient(withInterceptors([tokenInterceptor, authInterceptor, errorInterceptor]), withFetch()),
      provideAnimations(),
      MessageService],
 };

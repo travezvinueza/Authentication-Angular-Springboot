@@ -11,6 +11,7 @@ import { UserEditComponent } from "../user-edit/user-edit.component";
 import { RoleService } from '../../core/services/role.service';
 import { RoleDto } from '../../core/interfaces/RoleDto';
 import { AuthService } from '../../core/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 declare let $: any;
 
@@ -34,7 +35,7 @@ export class UserListComponent implements OnInit {
   userDetail!: FormGroup;
 
   selectedFile: File | null = null;
-  previewUrl: string | ArrayBuffer | null = null
+  previewUrl: string | ArrayBuffer | null = environment.defaultUserImage;
 
   usuariosEditar: any;
   modoOculto: boolean = true;

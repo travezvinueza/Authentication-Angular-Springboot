@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { RouterModule, RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './components/navbar/navbar.component';
 import { ToastModule } from 'primeng/toast';
-import { ExpiringSessionComponent } from './components/expiring-session/expiring-session.component';
+import { ExpiringSessionComponent } from './shared/expiring-session/expiring-session.component';
 @Component({
   selector: 'app-root',
   imports: [RouterOutlet, ToastModule, NavbarComponent, RouterModule, ExpiringSessionComponent],

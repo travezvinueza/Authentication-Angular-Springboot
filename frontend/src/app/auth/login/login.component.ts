@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { CommonModule, JsonPipe } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -7,15 +7,27 @@ import { InputTextModule } from 'primeng/inputtext';
 import { AuthService } from '../../core/services/auth.service';
 import { MessageService } from 'primeng/api';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ButtonModule } from 'primeng/button';
+import { DialogModule } from 'primeng/dialog';
 
 @Component({
   selector: 'app-login',
-  imports: [CommonModule, FormsModule, CardModule, InputTextModule, ReactiveFormsModule, RouterModule],
+  imports: [
+    CommonModule,
+    JsonPipe,
+    FormsModule,
+    DialogModule,
+    ButtonModule, 
+    CardModule,
+    InputTextModule, 
+    ReactiveFormsModule,
+    RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css',
 })
 export class LoginComponent implements OnInit {
-  isLogin = true;
+  imageUrl: string = '/img/angular.jpg';
+  visible: boolean = false;
   userDetail !: FormGroup;
 
   constructor(
@@ -43,7 +55,10 @@ export class LoginComponent implements OnInit {
       sessionStorage.removeItem('email');
       sessionStorage.removeItem('password');
     }
+  }
 
+  showDialog() {
+    this.visible = true;
   }
 
   login(): void {
@@ -57,7 +72,7 @@ export class LoginComponent implements OnInit {
     this.authService.login(email, password).subscribe({
       next: (response: any) => {
 
-        const roles = this.authService.getRoles();
+        const roles = this.authService.getRolesSignal()();
         if (roles.includes('ADMIN')) {
           this.router.navigate(['/user-list']);
         } else if (roles.includes('USER')) {

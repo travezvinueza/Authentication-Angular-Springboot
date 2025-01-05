@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
   apiUrl: 'https://tu-dominio.com/api',
-  defaultUserProfile:
+  defaultUserImage:
   'https://thumbs.dreamstime.com/b/default-avatar-profile-icon-vector-social-media-user-portrait-176256935.jpg',
 };
