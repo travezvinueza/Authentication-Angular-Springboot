@@ -4,7 +4,7 @@ import { AuthService } from '../services/auth.service';
 
 export const roleGuard = (requiredRoles: string[]): CanActivateFn => {
 
-  return (route, state) => {
+  return () => {
     const authService = inject(AuthService);
     const router = inject(Router);
 
@@ -15,10 +15,9 @@ export const roleGuard = (requiredRoles: string[]): CanActivateFn => {
     const hasRole = requiredRoles.some(role => userRoles.includes(role));
 
     if (hasRole) {
-      return true; // Permitir acceso si el usuario tiene al menos un rol
+      return true; 
     }
 
-    // Redirige a una página de "No autorizado" o a otra página específica
     router.navigate(['/unauthorized']);
     return false;
   };

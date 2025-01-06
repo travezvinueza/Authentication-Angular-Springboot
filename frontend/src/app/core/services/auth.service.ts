@@ -1,6 +1,6 @@
 import { Injectable, Signal, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, catchError, map, Observable, tap, throwError } from 'rxjs';
+import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { UserDto } from '../interfaces/UserDto';
 import { environment } from '../../../environments/environment';
 import { MessageService } from 'primeng/api';
@@ -14,10 +14,6 @@ export class AuthService {
   private refreshTimeout: any;
   private readonly rolesSignal = signal<string[]>(this.getDecodedToken()?.roles || []);
 
-  // Usamos BehaviorSubject para mantener el estado de la autenticación.
-  // private readonly authenticatedSubject = new BehaviorSubject<boolean>(this.isAuthenticated());
-  // authenticated$ = this.authenticatedSubject.asObservable();
-
   constructor(
     private readonly http: HttpClient,
     private readonly msService: MessageService) { }
@@ -30,7 +26,6 @@ export class AuthService {
         localStorage.setItem('imageProfile', user.imageProfile ?? '');
 
         this.updateRolesFromToken(user.token);
-        // this.authenticatedSubject.next(true);
       })
     );
   }
@@ -138,7 +133,7 @@ export class AuthService {
 
   /** Verifica si el usuario está autenticado */
   isAuthenticated(): boolean {
-    const token = localStorage.getItem('token');
+    const token = this.rolesSignal();
     return token ? !this.isTokenExpired() : false;
   }
 
@@ -150,7 +145,6 @@ export class AuthService {
       this.refreshTimeout = null; // Limpiar la referencia
     }
     this.rolesSignal.set([]);
-    // this.authenticatedSubject.next(false);
   }
 
   getUserImage(): string {

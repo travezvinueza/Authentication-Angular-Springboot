@@ -1,19 +1,19 @@
-import { Directive, Input, OnInit, TemplateRef, ViewContainerRef } from '@angular/core';
+import { Directive, effect, Input, TemplateRef, ViewContainerRef } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 
 @Directive({
   selector: '[appUserHasRole]'
 })
-export class UserHasRoleDirective implements OnInit {
+export class UserHasRoleDirective {
   @Input('appUserHasRole') roles: string[] | string = [];
 
   constructor(
     private readonly templateRef: TemplateRef<any>,
     private readonly viewContainerRef: ViewContainerRef,
     private readonly authService: AuthService
-  ) { }
-  ngOnInit(): void {
-    this.updateView();
+  ) {
+    effect(() =>
+      this.updateView());
   }
 
   private updateView(): void {
