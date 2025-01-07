@@ -77,6 +77,10 @@ export class LoginComponent implements OnInit {
           this.router.navigate(['/user-list']);
         } else if (roles.includes('USER')) {
           this.router.navigate(['/userHome']);
+        } else if (roles.includes('CLIENT')) {
+          this.router.navigate(['/userHome']);
+        } else if (roles.includes('TEACHER')) {
+          this.router.navigate(['/userHome']);
         } else {
           console.error('Rol desconocido:', roles);
         }

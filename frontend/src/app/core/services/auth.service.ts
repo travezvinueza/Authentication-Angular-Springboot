@@ -11,8 +11,8 @@ import { MessageService } from 'primeng/api';
 export class AuthService {
 
   private readonly baseUrl = environment.apiUrl + '/auth';
-  private refreshTimeout: any;
   private readonly rolesSignal = signal<string[]>(this.getDecodedToken()?.roles || []);
+  private refreshTimeout: any;
 
   constructor(
     private readonly http: HttpClient,
@@ -81,6 +81,10 @@ export class AuthService {
   }
 
   showConfirmation(): void {
+    if (!this.isAuthenticated()) {
+      return;
+    }
+
     this.msService.clear('confirm');
     this.msService.add({
       key: 'confirm',
@@ -102,17 +106,17 @@ export class AuthService {
     }
   }
 
+  /** Obtiene el token decodificado */
+  private getDecodedToken(): any {
+    const token = localStorage.getItem('token');
+    return token ? this.decodeToken(token) : null;
+  }
+
   /** Verifica si el token ha expirado */
   isTokenExpired(): boolean {
     const decoded = this.getDecodedToken();
     const expiration = decoded?.exp ? decoded.exp * 1000 : 0;
     return Date.now() > expiration;
-  }
-
-  /** Obtiene el token decodificado */
-  private getDecodedToken(): any {
-    const token = localStorage.getItem('token');
-    return token ? this.decodeToken(token) : null;
   }
 
   /** Verifica si el usuario tiene un rol específico */

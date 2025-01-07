@@ -34,7 +34,6 @@ export class NavbarComponent implements OnInit {
   }
 
   logout(): void {
-    this.authService.updateRolesFromToken("");
     this.authService.logOut();
     this.isAuthenticated = false;
   }
@@ -47,7 +46,7 @@ export class NavbarComponent implements OnInit {
       this.router.navigate(['/profile']);
     } else if (roles.includes('CLIENT')) {
       this.router.navigate(['/profile']);
-    } else if (roles.includes('GUEST')) {
+    } else if (roles.includes('TEACHER')) {
       this.router.navigate(['/profile']);
     } else {
       console.error('Rol no reconocido o no autenticado.');
