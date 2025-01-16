@@ -6,7 +6,7 @@ import { NavbarComponent } from './components/navbar/navbar.component';
 import { AuthService } from './core/services/auth.service';
 import { SidenavComponent } from "./components/sidenav/sidenav.component";
 import { ExpiringSessionComponent } from './shared/expiring-session/expiring-session.component';
-import { SidebarService } from './components/sidebar.service';
+import { SidebarService } from './core/services/sidebar.service';
 @Component({
   selector: 'app-root',
   imports: [
@@ -21,11 +21,14 @@ import { SidebarService } from './components/sidebar.service';
 export class AppComponent implements OnInit {
   title = 'frontend';
 
-  isLoginRoute: boolean = false;
   private readonly sidebarService = inject(SidebarService);
-  isSidebarVisible = this.sidebarService.getSidebarVisibility();
-  isAuthenticate: boolean = false;
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
+  isSidebarVisible = this.sidebarService.getSidebarVisibility();
+  isAuthenticate = this.authService.isAuthenticated();
+
+  isLoginRoute: boolean = false;
   private readonly authRoutes = [
     '/auth/login',
     '/auth/register',
@@ -33,16 +36,13 @@ export class AppComponent implements OnInit {
     '/auth/reset-password'
   ];
 
-  constructor(
-    private readonly router: Router,
-    private readonly authService: AuthService
-  ) {
+  constructor( ) {
     effect(() => {
       this.isAuthenticate = this.authService.isAuthenticated();
       this.ourRouter();
     })
-
   }
+
   ngOnInit(): void {
     this.authService.startTokenRefresh();
   }

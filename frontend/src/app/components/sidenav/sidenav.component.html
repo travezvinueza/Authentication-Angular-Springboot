@@ -3,9 +3,19 @@
     [attr.aria-hidden]="!isSidebarVisible()">
     <ul>
 
-        <li *ngIf="isAuthenticate">
+        <div class="" style="text-align: center;" *ngIf="isAuthenticate">
+            <p class="text-white">Welcome</p>
+            <img [src]="userImage" alt="User avatar" class="user-image" />
+        </div>
+
+        <li *appUserHasRole="'ADMIN'">
             <a routerLink="/admin/dashboard">
                 <i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        </li>
+
+        <li *ngIf="isAuthenticate">
+            <a routerLink="/pages/home">
+                <i class="fas fa-home"></i> Home</a>
         </li>
 
         <li *appUserHasRole="'ADMIN'">

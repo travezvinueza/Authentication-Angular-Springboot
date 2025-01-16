@@ -9,6 +9,7 @@
     </div>
 
     <div class="content" [ngClass]="isSidebarVisible() ? 'with-sidebar' : 'without-sidebar'">
+      <p-toast></p-toast>
       <app-expiring-session></app-expiring-session>
       <router-outlet></router-outlet>
     </div>

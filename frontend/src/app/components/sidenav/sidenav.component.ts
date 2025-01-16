@@ -1,5 +1,5 @@
 import { Component, inject } from '@angular/core';
-import { SidebarService } from '../sidebar.service';
+import { SidebarService } from '../../core/services/sidebar.service';
 import { CommonModule } from '@angular/common';
 import { RouterLink, RouterModule } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
@@ -18,6 +18,7 @@ export class SidenavComponent {
   isSidebarVisible = this.sidebarService.getSidebarVisibility();
   isAuthenticate = this.authService.isAuthenticated();
   rolesSignal = this.authService.getRolesSignal();
+  userImage = this.isAuthenticate ? this.authService.getUserImage() : '';
 
   toggleSidebar() {
     this.sidebarService.toggleSidebar(); 

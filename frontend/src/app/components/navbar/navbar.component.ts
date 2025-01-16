@@ -2,7 +2,7 @@ import { Component, inject } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
-import { SidebarService } from '../sidebar.service';
+import { SidebarService } from '../../core/services/sidebar.service';
 
 @Component({
   selector: 'app-navbar',
@@ -29,7 +29,7 @@ export class NavbarComponent {
 
   redirectToProfile(): void {
     if (this.isAuthenticate)
-      this.router.navigate(['/profile']);
+      this.router.navigate(['/pages/profile']);
   }
 
 }

@@ -75,7 +75,7 @@ export class LoginComponent implements OnInit {
         if (roles.includes('ADMIN')) {
           this.router.navigate(['/admin/dashboard']);
         } else if (roles) {
-          this.router.navigate(['/admin/dashboard']);
+          this.router.navigate(['/pages/home']);
         } else {
           this.msgService.add({ severity: 'error', summary: 'Error', detail: 'Rol no encontrado' });
         }

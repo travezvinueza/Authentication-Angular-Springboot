@@ -49,4 +49,12 @@
     opacity: 1;
     transition: transform 0.3s ease, opacity 0.3s;
   }
-  
+
+.user-image {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    margin-bottom: 20px;
+}
