@@ -1,0 +1,26 @@
+<div class="sidebar" *ngIf="isSidebarVisible()"
+    [ngClass]="{ 'showSidebar': isSidebarVisible, 'hideSidebar': !isSidebarVisible }"
+    [attr.aria-hidden]="!isSidebarVisible()">
+    <ul>
+
+        <li *ngIf="isAuthenticate">
+            <a routerLink="/admin/dashboard">
+                <i class="fas fa-tachometer-alt"></i> Dashboard</a>
+        </li>
+
+        <li *appUserHasRole="'ADMIN'">
+            <a routerLink="/admin/role">
+                <i class="fas fa-user-shield"></i> Roles</a>
+        </li>
+
+        <li *appUserHasRole="'ADMIN'">
+            <a routerLink="/admin/user-list">
+                <i class="fas fa-users"></i> Users</a>
+        </li>
+
+        <li *ngIf="isAuthenticate">
+            <a routerLink="" (click)="logout()">Logout</a>
+        </li>
+
+    </ul>
+</div>

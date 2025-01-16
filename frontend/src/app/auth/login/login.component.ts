@@ -70,19 +70,14 @@ export class LoginComponent implements OnInit {
     const { email, password } = this.userDetail.value;
 
     this.authService.login(email, password).subscribe({
-      next: (response: any) => {
-
+      next: () => {
         const roles = this.authService.getRolesSignal()();
         if (roles.includes('ADMIN')) {
-          this.router.navigate(['/user-list']);
-        } else if (roles.includes('USER')) {
-          this.router.navigate(['/userHome']);
-        } else if (roles.includes('CLIENT')) {
-          this.router.navigate(['/userHome']);
-        } else if (roles.includes('TEACHER')) {
-          this.router.navigate(['/userHome']);
+          this.router.navigate(['/admin/dashboard']);
+        } else if (roles) {
+          this.router.navigate(['/admin/dashboard']);
         } else {
-          console.error('Rol desconocido:', roles);
+          this.msgService.add({ severity: 'error', summary: 'Error', detail: 'Rol no encontrado' });
         }
       },
       error: (err: HttpErrorResponse) => {

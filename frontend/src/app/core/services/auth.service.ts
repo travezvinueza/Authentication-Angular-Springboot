@@ -4,6 +4,7 @@ import { catchError, map, Observable, tap, throwError } from 'rxjs';
 import { UserDto } from '../interfaces/UserDto';
 import { environment } from '../../../environments/environment';
 import { MessageService } from 'primeng/api';
+import { Router } from '@angular/router';
 
 @Injectable({
   providedIn: 'root',
@@ -15,6 +16,7 @@ export class AuthService {
   private refreshTimeout: any;
 
   constructor(
+    private readonly router: Router,
     private readonly http: HttpClient,
     private readonly msService: MessageService) { }
 
@@ -149,6 +151,7 @@ export class AuthService {
       this.refreshTimeout = null; // Limpiar la referencia
     }
     this.rolesSignal.set([]);
+    this.router.navigate(['/auth/login']);
   }
 
   getUserImage(): string {

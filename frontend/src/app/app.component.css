@@ -1,0 +1,44 @@
+.container {
+    display: flex;
+    min-height: 100vh;
+  }
+
+.app-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000; 
+  }
+  
+  .app-sidenav {
+    flex: 0 0 250px; 
+    background-color: #333;
+    color: white;
+    padding: 20px;
+  }
+  
+  .content {
+    position: absolute;
+    top: 50px; 
+    right: 0;
+    bottom: 0;
+    overflow-y: auto;
+  }
+  
+  .content.content-with-sidebar {
+    margin-left: 0;
+  }
+  
+  .with-sidebar {
+    left: 200px;
+    padding: 3px;
+    transition: left 0.3s ease, padding-left 0.3s ease;
+  }
+  
+  .without-sidebar {
+    left: 25px;
+    right: 25px;
+    padding: 3px;
+    transition: left 0.3s ease, padding-left 0.3s ease;
+  }

@@ -1,56 +1,35 @@
-import { Component, effect, OnInit, Signal } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { AuthService } from '../../core/services/auth.service';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink, RouterModule } from '@angular/router';
-import { UserHasRoleDirective } from '../../shared/directives/user-has-role.directive';
+import { SidebarService } from '../sidebar.service';
 
 @Component({
   selector: 'app-navbar',
-  imports: [CommonModule, RouterModule, RouterLink, UserHasRoleDirective],
+  imports: [CommonModule, RouterModule, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.css'
 })
-export class NavbarComponent implements OnInit {
-  collapsed = true;
-  isAuthenticated: boolean = false;
-  userImage: string = '';
-  rolesSignal!: Signal<string[]>;  
+export class NavbarComponent {
+  private readonly sidebarService = inject(SidebarService);
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
 
-  constructor(
-    private readonly authService: AuthService,
-    private readonly router: Router) {
-      effect(() => {
-        this.isAuthenticated = this.authService.isAuthenticated();
-        this.userImage = this.isAuthenticated ? this.authService.getUserImage() : '';
-      });
-     }
+  isAuthenticate = this.authService.isAuthenticated();
+  rolesSignal = this.authService.getRolesSignal();
+  userImage = this.isAuthenticate ? this.authService.getUserImage() : '';
 
-  ngOnInit(): void {
-    this.rolesSignal = this.authService.getRolesSignal();
-  }
-
-  toggleCollapsed() {
-    this.collapsed = !this.collapsed;
+  toggleSidebar() {
+    this.sidebarService.toggleSidebar();
   }
 
   logout(): void {
     this.authService.logOut();
-    this.isAuthenticated = false;
   }
 
   redirectToProfile(): void {
-    const roles = this.rolesSignal();
-    if (roles.includes('ADMIN')) {
+    if (this.isAuthenticate)
       this.router.navigate(['/profile']);
-    } else if (roles.includes('USER')) {
-      this.router.navigate(['/profile']);
-    } else if (roles.includes('CLIENT')) {
-      this.router.navigate(['/profile']);
-    } else if (roles.includes('TEACHER')) {
-      this.router.navigate(['/profile']);
-    } else {
-      console.error('Rol no reconocido o no autenticado.');
-    }
   }
 
 }
