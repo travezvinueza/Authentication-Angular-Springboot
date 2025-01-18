@@ -19,6 +19,7 @@ export class SidenavComponent {
   isAuthenticate = this.authService.isAuthenticated();
   rolesSignal = this.authService.getRolesSignal();
   userImage = this.isAuthenticate ? this.authService.getUserImage() : '';
+  emailSignal = this.isAuthenticate ? this.authService.getEmail() : '';
 
   toggleSidebar() {
     this.sidebarService.toggleSidebar(); 

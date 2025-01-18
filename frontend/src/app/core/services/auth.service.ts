@@ -11,14 +11,17 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
 
-  private readonly baseUrl = environment.apiUrl + '/auth';
+  private readonly baseUrl = environment.API_URL + '/auth';
   private readonly rolesSignal = signal<string[]>(this.getDecodedToken()?.roles || []);
+  private readonly emailSignal = signal<string>(this.getDecodedToken()?.email || '');
   private refreshTimeout: any;
 
   constructor(
     private readonly router: Router,
     private readonly http: HttpClient,
-    private readonly msService: MessageService) { }
+    private readonly msService: MessageService) {
+    this.updateRolesFromToken(localStorage.getItem('token') ?? '');
+  }
 
   login(email: string, password: string): Observable<UserDto> {
     const body = { email, password };
@@ -131,10 +134,17 @@ export class AuthService {
     return this.rolesSignal;
   }
 
+  getEmail(): string {
+    return this.emailSignal();
+  }
+
   updateRolesFromToken(token: string): void {
     const decodedToken = this.decodeToken(token);
     const roles = decodedToken?.roles || [];
+    const email = decodedToken?.sub || '';
+
     this.rolesSignal.set(roles); // Actualizar el signal
+    this.emailSignal.set(email);
   }
 
   /** Verifica si el usuario está autenticado */

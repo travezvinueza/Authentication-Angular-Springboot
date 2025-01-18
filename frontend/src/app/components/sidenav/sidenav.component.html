@@ -4,9 +4,10 @@
     <ul>
 
         <div class="" style="text-align: center;" *ngIf="isAuthenticate">
-            <p class="text-white">Welcome</p>
             <img [src]="userImage" alt="User avatar" class="user-image" />
+            <p class="text-white">{{ emailSignal }}</p>
         </div>
+        <br>
 
         <li *appUserHasRole="'ADMIN'">
             <a routerLink="/admin/dashboard">

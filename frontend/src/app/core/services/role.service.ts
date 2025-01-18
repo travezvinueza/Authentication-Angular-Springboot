@@ -9,7 +9,7 @@ import { RoleDto } from '../interfaces/RoleDto';
 })
 export class RoleService {
 
-  private readonly baseUrl = environment.apiUrl + '/roles';
+  private readonly baseUrl = environment.API_URL + '/roles';
 
   constructor(private readonly http: HttpClient) {}
 
