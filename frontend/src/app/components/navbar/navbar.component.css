@@ -1,5 +1,24 @@
 .nav-link {
-    color: rgb(252, 252, 252);
-    padding: 9px;
-    font-size: 18px;
+  color: rgb(252, 252, 252);
+  padding: 9px;
+  font-size: 18px;
+}
+
+.fas.fa-bell {
+  margin-right: 30px;
+  font-size: 1.5rem;
+  color: yellow;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+.badge-notification {
+  position: absolute;
+  top: 6px;
+  font-size: 0.75rem;
+  color: white;
+  background-color: red;
+  padding: 2px 6px;
+  border-radius: 50%;
+  display: inline-block;
 }

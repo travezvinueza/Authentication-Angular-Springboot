@@ -19,6 +19,7 @@
 
 
 <div *ngIf="isLoginRoute">
+  <p-button label="Toggle Dark Mode" (onClick)="toggleDarkMode()"/>
   <p-toast></p-toast>
   <router-outlet></router-outlet>
 </div>

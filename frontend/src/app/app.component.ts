@@ -7,10 +7,12 @@ import { AuthService } from './core/services/auth.service';
 import { SidenavComponent } from "./components/sidenav/sidenav.component";
 import { ExpiringSessionComponent } from './shared/expiring-session/expiring-session.component';
 import { SidebarService } from './core/services/sidebar.service';
+import { ButtonModule } from 'primeng/button';
 @Component({
   selector: 'app-root',
   imports: [
     ToastModule,
+    ButtonModule,
     RouterModule,
     ExpiringSessionComponent,
     CommonModule, NavbarComponent,
@@ -57,4 +59,10 @@ export class AppComponent implements OnInit {
     });
   }
 
+  toggleDarkMode() {
+    const element = document.querySelector('html');
+    if (element) {
+      element.classList.toggle('my-app-dark');
+    }
+}
 }

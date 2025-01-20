@@ -18,6 +18,8 @@ export class NavbarComponent {
   isAuthenticate = this.authService.isAuthenticated();
   rolesSignal = this.authService.getRolesSignal();
   userImage = this.isAuthenticate ? this.authService.getUserImage() : '';
+  notificationCount: number = 5; 
+
 
   toggleSidebar() {
     this.sidebarService.toggleSidebar();
