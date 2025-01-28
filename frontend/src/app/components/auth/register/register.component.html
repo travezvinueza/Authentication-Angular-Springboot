@@ -1,11 +1,93 @@
-<div class="container d-flex align-items-center justify-content-center" style="height: 60vh; margin-top: 10vh;">
-    <form [formGroup]="formUser" (ngSubmit)="register()">
-        <p-card header="Sign up" class="text-center" [style]="{ width: '370px'}">
+<app-floating-configurator />
+<div
+    class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
+    <div class="flex flex-col items-center justify-center">
+        <div
+            style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
+            <div class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+                <div class="text-center mb-4">
+                    <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-2">Welcome to PrimeLand!
+                    </div>
+                    <span class="text-muted-color font-medium">Sign up to continue</span>
+                </div>
 
-            <div class="d-flex flex-column align-items-center ">
-                <img *ngIf="previewUrl" [src]="previewUrl" alt="Vista previa" class="align-items-lg-center"
-                    width="100px" height="100px" style="border-radius: 50%;" />
+                <div>
+                    <form [formGroup]="formUser" (ngSubmit)="register()">
+                        <div class="flex flex-col items-center ">
+                            <img *ngIf="previewUrl" [src]="previewUrl" alt="Vista previa" width="100px" height="100px"
+                                style="border-radius: 50%;" />
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="name"
+                                class="block text-surface-900 dark:text-surface-0 text-xl font-medium">Username</label>
+                            <input pInputText type="text" formControlName="name" id="name" placeholder="Username"
+                                class="w-full md:w-[30rem] mb-2" required />
+
+                            <div>
+                                <span *ngIf="hasError('name', 'required')" class="text-primary">Username is
+                                    required</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-2">
+                            <label for="email"
+                                class="block text-surface-900 dark:text-surface-0 text-xl font-medium">Email</label>
+                            <input pInputText type="email" formControlName="email" id="email" placeholder="Email"
+                                class="w-full md:w-[30rem] mb-2" required />
+
+                            <div>
+                                <span *ngIf="hasError('email', 'required')" class="text-primary">email is
+                                    required</span>
+                                <span *ngIf="hasError('email', 'email')" class="text-primary">you must enter a valid
+                                    email</span>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="password"
+                                class="block text-surface-900 dark:text-surface-0 font-medium text-xl">Password</label>
+                            <p-password type="password" formControlName="password" id="password" placeholder="Password"
+                                [toggleMask]="true" styleClass="mb-2" [fluid]="true" [feedback]="false"
+                                required></p-password>
+
+                            <div>
+                                <span *ngIf="hasError('password', 'required')" class="text-primary">password is
+                                    required</span>
+                                <span *ngIf="hasError('password', 'minlength')" class="text-primary">the password must
+                                    be at least 6 characters
+                                    long</span>
+                            </div>
+                        </div>
+
+                        <!-- <div>
+                            <div class="form-group mt-3">
+                                <select id="roles" formControlName="roles" class="form-select" multiple required>
+                                    <option value="" disabled selected>Select a Rol</option>
+                                    <option value="ADMIN">ADMIN</option>
+                                    <option value="USER">USER</option>
+                                </select>
+                            </div>
+                        </div> -->
+
+                        <div class="mb-6">
+                            <input type="file" accept="image/*" formControlName="imageProfile"
+                                (change)="uploadFile($event)" />
+                        </div>
+
+                        <p-button type="submit" styleClass="w-full">Sign Up</p-button>
+
+                        <div class="mt-3 text-center">Already have an account?
+                            <span routerLink="/auth/login"
+                                class="font-medium no-underline ml-2 cursor-pointer text-primary">
+                                Login
+                            </span>
+                        </div>
+
+                    </form>
+                </div>
             </div>
+<<<<<<< Updated upstream:frontend/src/app/components/auth/register/register.component.html
 
             <div class="form-group">
                 <input id="username" type="text" formControlName="username" placeholder="Username"
@@ -41,3 +123,8 @@
         </p-card>
     </form>
 </div>
+=======
+        </div>
+    </div>
+</div>
+>>>>>>> Stashed changes:frontend/src/app/auth/register/register.component.html

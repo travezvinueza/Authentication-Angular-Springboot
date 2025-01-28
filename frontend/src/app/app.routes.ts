@@ -1,24 +1,40 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './components/home/home.component';
-import { LoginComponent } from './components/auth/login/login.component';
-import { RegisterComponent } from './components/auth/register/register.component';
-import { adminGuard } from './guards/admin.guard';
-import { authGuard } from './guards/auth.guard';
-import { ResetPasswordComponent } from './components/auth/reset-password/reset-password.component';
-import { ForgotPasswordComponent } from './components/auth/forgot-password/forgot-password.component';
-import { UserListComponent } from './components/admin/user-list/user-list.component';
-import { RoleComponent } from './components/admin/role/role.component';
-import { ProfileComponent } from './components/profile/profile.component';
+import { LayoutComponent } from './layout/components/layout/layout.component';
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/login', pathMatch: 'full' }, 
-  { path: 'login', component: LoginComponent, title: 'Login' }, 
-  { path: 'register', component: RegisterComponent, title: 'Register' }, 
-  { path: 'forgot-password', component: ForgotPasswordComponent, title: 'Forgot Password' },
-  { path: 'reset-password', component: ResetPasswordComponent, title: 'Reset Password' },
-  { path: 'userHome', component: HomeComponent, title: 'User', canActivate: [authGuard] }, 
-  { path: 'role', component: RoleComponent, title: 'Roles', canActivate: [adminGuard], }, 
-  { path: 'user-list', component: UserListComponent, title: 'List', canActivate: [authGuard] },  
-  { path: 'profile', component: ProfileComponent, title: 'Profile', canActivate: [authGuard] },
-  { path: '**', redirectTo: '/login' } 
+
+  { path: '', redirectTo: '/pages/landing', pathMatch: 'full' },
+  { path: 'auth', loadChildren: () => import('./auth/auth.routes').then(m => m.default) },
+
+  {
+    path: '',
+    component: LayoutComponent,
+    children: [
+      { path: 'admin', loadChildren: () => import('./admin/admin.routes').then(m => m.default) },
+      { path: 'pages', loadChildren: () => import('./pages/pages.routes').then(m => m.default) },
+    ]
+  },
+
+
+  {
+    path: 'pages/landing',
+    loadComponent: () => import('./pages/landing/landing').then(m => m.Landing),
+    title: 'Landing'
+  },
+
+  {
+    path: 'shared/not-found',
+    loadComponent: () => import('./shared/not-found/not-found.component').then(m => m.NotFoundComponent),
+  },
+  {
+    path: 'shared/access-denied',
+    loadComponent: () => import('./shared/access-denied/access-denied.component').then(m => m.AccessDeniedComponent),
+  },
+  {
+    path: 'shared/error',
+    loadComponent: () => import('./shared/error/error.component').then(m => m.ErrorComponent),
+  },
+
+  { path: '**', redirectTo: '/shared/not-found' }
+
 ];

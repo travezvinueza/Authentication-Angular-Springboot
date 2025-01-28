@@ -1,0 +1,21 @@
+<ul class="layout-menu">
+  <li class="flex flex-col items-center gap-2 user-info" *ngIf="isAuthenticate">
+    <p-avatar [image]="userImage || 'assets/default-user.png'" size="xlarge" shape="circle"
+      class="border border-gray-300"></p-avatar>
+    <div class="user-details text-center">
+      <span>{{ emailSignal }}</span>
+      <span class="block text-sm">{{ rolesSignal().join(', ') }}</span>
+    </div>
+  </li>
+
+  <ng-container *ngFor="let item of model; let i = index">
+      <app-menu-item 
+        *ngIf="!item.separator" 
+        [item]="item" 
+        [index]="i" 
+        [root]="true">
+      </app-menu-item>
+      <li *ngIf="item.separator" class="menu-separator"></li>
+  </ng-container>
+
+</ul>
